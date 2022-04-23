@@ -7,6 +7,8 @@ PREV_WIDTH, PREV_HEIGHT, PREV_FLAGS, PREV_DEPTH, PREV_VSYNC = 0, 0, 0, 0, 0
 
 INITIALIZED = False
 FRAMEBUFFER = None
+FB_WIDTH, FB_HEIGT = 0, 0
+
 INSTANCE = None
 WIDTH, HEIGHT = 0, 0
 FLAGS = 0
@@ -77,9 +79,10 @@ def fill_instance(color: tuple) -> None:
 
 def change_framebuffer(w: int, h: int, f: int) -> None:
     """change a framebuffer"""
-    global FRAMEBUFFER
+    global FRAMEBUFFER, FB_HEIGT, FB_WIDTH
     FRAMEBUFFER = pygame.Surface((w, h), flags=f).convert()
-
+    FB_WIDTH = w
+    FB_HEIGT = h
 
 def get_framebuffer():
     """returns the framebuffer"""

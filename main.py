@@ -3,19 +3,28 @@ import pygame
 import engine
 from engine import window, clock, user_input, handler, draw
 from engine import filehandler, maths, animation, state, serialize
-from engine import spritesheet
+from engine import spritesheet, eventhandler
 from engine.globals import *
+
+from scripts import WindowObject
+
 
 # create essential instances
 window.create_instance("Map Editor", 1280, 720, f=pygame.RESIZABLE)
 window.set_scaling(True)
 # should use framebuffer!
-window.change_framebuffer(1280, 720, pygame.SRCALPHA)
+window.change_framebuffer(640, 360, pygame.SRCALPHA)
 
 # ------------------------------ your code ------------------------------ #
 FPS = 60 # change fps if needed
 BACKGROUND = (255, 255, 255) # change background color if needed
 
+HANDLER = WindowObject.WindowObjectManager()
+state.push_state(HANDLER)
+
+container = WindowObject.WindowObject(0, 0, 1, 1)
+child = container.create_child(0.1, 0.1, 0.9, 0.9, WindowObject.WindowObject)
+child.set_background_color((255, 0, 0))
 
 # ----------------------------------------------------------------------- #
 
@@ -24,16 +33,15 @@ clock.start(fps=FPS)
 window.create_clock(clock.FPS)
 running = True
 while running:
-    # fill instance
-    window.fill_buffer(BACKGROUND)
 
     # updates
     if state.CURRENT:
         state.CURRENT.update(clock.delta_time)
 
     # render
-    window.push_buffer((0,0))
-    pygame.display.flip()
+    if state.CURRENT.dirty:
+        window.push_buffer((0,0))
+        pygame.display.flip()
 
     # update keyboard and mouse
     user_input.update()
@@ -63,7 +71,7 @@ while running:
             user_input.update_ratio(window.WIDTH, window.HEIGHT, window.ORIGINAL_WIDTH, window.ORIGINAL_HEIGHT)
         elif e.type == pygame.WINDOWMAXIMIZED:
             # window maximized
-            window.get_instance().fill(background)
+            window.get_instance().fill(BACKGROUND)
             # re render all entities
             HANDLER.render_all()
             # push frame
