@@ -9,6 +9,7 @@ from engine.globals import *
 from scripts import WindowObject, SideBar
 from scripts.globals import *
 
+# ------------------------- start up stuff ------------------------------ #
 
 # create essential instances
 window.create_instance("Map Editor", 1280, 720, f=pygame.RESIZABLE)
@@ -27,10 +28,10 @@ container.set_background_color(Theme.BACKGROUND)
 
 child = container.create_child(0.005, 0.01, 0.38, 0.995, SideBar.SideBar)
 child.set_background_color(Theme.SECONDARY)
+child.set_grid_spacing(10, 10)
 child.set_columns(3)
 
-item = child.create_child(0, 0, 0, 0, SideBar.SideBarObject)
-item.set_sprite("assets/art.png")
+child.load_spritesheet("assets/spritesheets/grass.json")
 
 print(HANDLER.update_order)
 

@@ -63,7 +63,6 @@ class WindowObject(handler.PersistentObject):
         self.children = []
 
         # grids
-        self.grid = []
         self.grid_spacing = [0, 0]
         self.parent_grid_pos = 0
 
@@ -128,7 +127,14 @@ class WindowObject(handler.PersistentObject):
         """Set amt of columns"""
         self.item_columns = c
         self.item_width = (self.rect.w - self.grid_spacing[0] * (self.item_columns + 1)) // self.item_columns
-        print(self.item_columns, self.item_width)
+
+    def set_grid_spacing(self, x: int = None, y: int = None):
+        """Set grid spacing"""
+        if x:
+            self.grid_spacing[0] = x
+        if y:
+            self.grid_spacing[1] = y
+        self.set_columns(self.item_columns)
 
     def set_background_color(self, color: tuple):
         """Set the background"""
@@ -140,6 +146,12 @@ class WindowObject(handler.PersistentObject):
         self.sprite_path = path
         self.sprite = filehandler.scale(filehandler.get_image(path), (int(self.rect.w), int(self.rect.h)))
         self.dirty = True
+
+    def set_grid_pos(self, gridpos: int):
+        """Set the grid pos and let parent apply transformations"""
+        self.parent_grid_pos = gridpos
+        if self.parent:
+            self.parent.apply_all_transformations(self)
 
     def create_child(self, l: float, t: float, r: float, h: float, object_type):
         """Create a child object and return it"""

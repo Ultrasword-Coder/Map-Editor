@@ -1,4 +1,5 @@
 import pygame
+import json
 
 # pygame flags
 SRC_ALPHA = pygame.SRCALPHA
@@ -49,3 +50,10 @@ def crop_image(source, target, source_area):
     """Crop source onto target given areas"""
     target.blit(source, (0, 0), source_area)
 
+
+def load_json(path: str):
+    """Load a json"""
+    with open(path, 'r') as file:
+        data = json.load(file)
+        file.close()
+    return data
