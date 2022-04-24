@@ -6,25 +6,33 @@ from engine import filehandler, maths, animation, state, serialize
 from engine import spritesheet, eventhandler
 from engine.globals import *
 
-from scripts import WindowObject
+from scripts import WindowObject, SideBar
+from scripts.globals import *
 
 
 # create essential instances
 window.create_instance("Map Editor", 1280, 720, f=pygame.RESIZABLE)
 window.set_scaling(True)
 # should use framebuffer!
-window.change_framebuffer(640, 360, pygame.SRCALPHA)
+window.change_framebuffer(1920, 1080, pygame.SRCALPHA)
 
 # ------------------------------ your code ------------------------------ #
 FPS = 60 # change fps if needed
-BACKGROUND = (255, 255, 255) # change background color if needed
 
 HANDLER = WindowObject.WindowObjectManager()
 state.push_state(HANDLER)
 
 container = WindowObject.WindowObject(0, 0, 1, 1)
-child = container.create_child(0.1, 0.1, 0.9, 0.9, WindowObject.WindowObject)
-child.set_background_color((255, 0, 0))
+container.set_background_color(Theme.BACKGROUND)
+
+child = container.create_child(0.005, 0.01, 0.38, 0.995, SideBar.SideBar)
+child.set_background_color(Theme.SECONDARY)
+child.set_columns(3)
+
+item = child.create_child(0, 0, 0, 0, SideBar.SideBarObject)
+item.set_sprite("assets/art.png")
+
+print(HANDLER.update_order)
 
 # ----------------------------------------------------------------------- #
 
@@ -37,13 +45,13 @@ while running:
     # updates
     if state.CURRENT:
         state.CURRENT.update(clock.delta_time)
-
-    # render
-    if state.CURRENT.dirty:
-        window.push_buffer((0,0))
-        pygame.display.flip()
+        # render
+        if state.CURRENT.dirty:
+            window.push_buffer((0,0))
+            pygame.display.flip()
 
     # update keyboard and mouse
+    # print(window.mouse_window_to_framebuffer(user_input.get_mouse_pos()))
     user_input.update()
     # for loop through events
     for e in pygame.event.get():

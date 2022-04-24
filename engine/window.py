@@ -7,7 +7,7 @@ PREV_WIDTH, PREV_HEIGHT, PREV_FLAGS, PREV_DEPTH, PREV_VSYNC = 0, 0, 0, 0, 0
 
 INITIALIZED = False
 FRAMEBUFFER = None
-FB_WIDTH, FB_HEIGT = 0, 0
+FB_WIDTH, FB_HEIGHT = 0, 0
 
 INSTANCE = None
 WIDTH, HEIGHT = 0, 0
@@ -84,6 +84,7 @@ def change_framebuffer(w: int, h: int, f: int) -> None:
     FB_WIDTH = w
     FB_HEIGT = h
 
+
 def get_framebuffer():
     """returns the framebuffer"""
     return FRAMEBUFFER
@@ -134,3 +135,8 @@ def draw(surface, pos: tuple) -> None:
     global INSTANCE_CHANGED
     INSTANCE_CHANGED = True
     INSTANCE.blit(surface, pos)
+
+
+def mouse_window_to_framebuffer(mouse_pos: tuple) -> tuple:
+    """Return the framebuffer coords of the mouse"""
+    return mouse_pos[0] / WIDTH * FB_WIDTH, mouse_pos[1] / HEIGHT * FB_HEIGHT

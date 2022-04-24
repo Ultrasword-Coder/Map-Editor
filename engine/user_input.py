@@ -80,6 +80,8 @@ def mouse_move_update(move_event):
 
 def get_mouse_pos():
     """Get mouse position relative to the screen"""
+    # convert to framebuffer area?
+    
     return x_pos * x_ratio, y_pos * y_ratio
 
 
