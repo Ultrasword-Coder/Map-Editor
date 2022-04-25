@@ -16,3 +16,4 @@ class Theme:
 
     BACKGROUND = (23, 32, 42)
     SECONDARY = (0, 21, 37)
+    TERTIARY = (0, 35, 61)

@@ -6,13 +6,13 @@ from engine import filehandler, maths, animation, state, serialize
 from engine import spritesheet, eventhandler
 from engine.globals import *
 
-from scripts import WindowObject, SideBar
+from scripts import WindowObject, SideBar, Editor
 from scripts.globals import *
 
 # ------------------------- start up stuff ------------------------------ #
 
 # create essential instances
-window.create_instance("Map Editor", 640, 360, f=pygame.RESIZABLE)
+window.create_instance("Map Editor", 1280, 720, f=pygame.RESIZABLE)
 window.set_scaling(True)
 # should use framebuffer!
 window.change_framebuffer(1280, 720, pygame.SRCALPHA)
@@ -36,9 +36,9 @@ child.set_columns(3)
 # item.set_grid_pos(1)
 child.load_spritesheet("assets/spritesheets/grass.json")
 
-print(HANDLER.update_order)
 
-print(window.FB_HEIGHT)
+editor = container.create_child(0.385, 0.01, 0.995, 0.995, Editor.Editor)
+editor.set_background_color(Theme.SECONDARY)
 
 # ----------------------------------------------------------------------- #
 

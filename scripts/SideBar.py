@@ -12,6 +12,9 @@ from scripts import art
 from scripts.globals import *
 
 
+# TODO - consider making a sidebar selection thing with multiple sidebars in a container
+
+
 class SideBarObject(WindowObject.WindowObject):
     """
     Side Bar Object
@@ -24,7 +27,7 @@ class SideBarObject(WindowObject.WindowObject):
         
         self.sprite_data = None
         state.CURRENT.remove_object(self.object_id)
-  
+
     def update(self, dt: float):
         """Update function"""
         # print(self.rect, window.mouse_window_to_framebuffer(user_input.get_mouse_pos()))
@@ -44,6 +47,8 @@ class SideBarObject(WindowObject.WindowObject):
 
             # draw hitbox for clicking 
             # to be removed
+            # there is an offset because we are adding world pos to rel pos
+            # leave for now
             draw.DEBUG_DRAW_RECT(self.parent.image, self.rect, offset=(self.offset[0], -self.offset[1]))
 
     def set_sprite_data(self, data):
