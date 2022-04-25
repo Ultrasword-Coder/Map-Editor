@@ -110,18 +110,18 @@ class WindowObject(handler.PersistentObject):
             state.CURRENT.dirty = True
             self.dirty = False
 
-    def is_hovering(self) -> bool:
+    def is_hovering(self, offx: int = 0, offy: int = 0) -> bool:
         """Checks if mouse is hovering over the object"""
         mpos = window.mouse_window_to_framebuffer(user_input.get_mouse_pos())
-        if mpos[0] < self.rect.x or mpos[0] > self.rect.w + self.rect.x:
+        if mpos[0] < self.rect.x + offx or mpos[0] > self.rect.x + self.rect.w + offx:
             return False
-        if mpos[1] < self.rect.y or mpos[1] > self.rect.y + self.rect.h:
+        if mpos[1] < self.rect.y + offy or mpos[1] > self.rect.y + self.rect.h + offy:
             return False
         return True
 
-    def is_clicked(self) -> bool:
+    def is_clicked(self, offx: int = 0, offy: int = 0) -> bool:
         """Check if window object is being hovered and has been clicked"""
-        return self.is_hovering() and user_input.mouse_button_clicked(1)
+        return self.is_hovering(offx, offy) and user_input.mouse_button_clicked(1)
 
     def set_columns(self, c: int):
         """Set amt of columns"""

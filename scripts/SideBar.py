@@ -5,8 +5,10 @@ from . import WindowObject, art
 from engine import filehandler, spritesheet, state
 from engine import eventhandler,animation, user_input
 from engine import window, spritesheet, maths, clock
+from engine import draw
 from engine.globals import *
 
+from scripts import art
 from scripts.globals import *
 
 
@@ -15,27 +17,34 @@ class SideBarObject(WindowObject.WindowObject):
     Side Bar Object
     - sprites
     """
+
     def __init__(self, l, t, r, b, parent_object=None):
         """SideBarObejct constructor"""
         super().__init__(0, 0, 0, 0, parent_object)
         
         self.sprite_data = None
         state.CURRENT.remove_object(self.object_id)
-    
+  
     def update(self, dt: float):
         """Update function"""
-        if self.is_clicked():
-            print("PAOWDPAWod ")
+        # print(self.rect, window.mouse_window_to_framebuffer(user_input.get_mouse_pos()))
+        if self.is_clicked(offy = -self.offset[1]):
+            print(f"Item: {self.object_id} clicked")
 
     def render(self):
         """Empty render function"""
         # just render it
         if self.sprite and self.dirty:
-            ppos = self.parent.get_rel_pos((self.rect.x, self.rect.y - self.parent.offset[1]))
+            self.offset[1] = self.parent.offset[1]
+            ppos = self.parent.get_rel_pos((self.rect.x, self.rect.y - self.offset[1]))
             # print("SideBar.py      | ", self.object_id, ppos)
             self.parent.image.blit(self.sprite, ppos)
             state.CURRENT.dirty = True
             self.dirty = False
+
+            # draw hitbox for clicking 
+            # to be removed
+            draw.DEBUG_DRAW_RECT(self.parent.image, self.rect, offset=(self.offset[0], -self.offset[1]))
 
     def set_sprite_data(self, data):
         """Set sprite data"""
@@ -71,6 +80,8 @@ class SideBar(WindowObject.WindowObject):
             if user_input.y_scroll:
                 # print(self.offset[1])
                 self.set_all_dirty()
+            for child in self.children:
+                child.update(dt)
     
     def render(self):
         """Default Render function"""
@@ -79,15 +90,16 @@ class SideBar(WindowObject.WindowObject):
             # if this is dirty, all children are dirty
             for i in self.children:
                 self.set_all_dirty()
-            print("SideBar.py      | ", self.object_id, self.rect)
+            # print("SideBar.py      | ", self.object_id, self.rect)
             self.image.fill(self.back_color)
             # render children
             for child in self.children:
-                child.update(clock.delta_time)
                 child.render()
             window.get_framebuffer().blit(self.image, (self.rect.x, self.rect.y))
             state.CURRENT.dirty = True
             self.dirty = False
+            
+            # draw.DEBUG_DRAW_LINE(window.get_framebuffer(), (255, 0, 0), (self.rect.x, self.offset[1]), (self.rect.right, self.offset[1]))
 
     def add_item(self, sprite_path: str, obj):
         """Add a new SideBarObject"""
@@ -157,4 +169,3 @@ class SideBar(WindowObject.WindowObject):
             # set grid pos!
             option = self.get_empty_grid_pos()
             obj.set_grid_pos(option)
-

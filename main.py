@@ -12,10 +12,10 @@ from scripts.globals import *
 # ------------------------- start up stuff ------------------------------ #
 
 # create essential instances
-window.create_instance("Map Editor", 1280, 720, f=pygame.RESIZABLE)
+window.create_instance("Map Editor", 640, 360, f=pygame.RESIZABLE)
 window.set_scaling(True)
 # should use framebuffer!
-window.change_framebuffer(1920, 1080, pygame.SRCALPHA)
+window.change_framebuffer(1280, 720, pygame.SRCALPHA)
 
 # ------------------------------ your code ------------------------------ #
 FPS = 60 # change fps if needed
@@ -31,6 +31,9 @@ child.set_background_color(Theme.SECONDARY)
 child.set_grid_spacing(10, 10)
 child.set_columns(3)
 
+# item = child.create_child(0, 0, 0, 0, SideBar.SideBarObject)
+# item.set_sprite("assets/art.png")
+# item.set_grid_pos(1)
 child.load_spritesheet("assets/spritesheets/grass.json")
 
 print(HANDLER.update_order)
@@ -44,7 +47,6 @@ clock.start(fps=FPS)
 window.create_clock(clock.FPS)
 running = True
 while running:
-
     # updates
     if state.CURRENT:
         state.CURRENT.update(clock.delta_time)
@@ -82,7 +84,7 @@ while running:
             user_input.update_ratio(window.WIDTH, window.HEIGHT, window.ORIGINAL_WIDTH, window.ORIGINAL_HEIGHT)
         elif e.type == pygame.WINDOWMAXIMIZED:
             # window maximized
-            window.get_instance().fill(BACKGROUND)
+            window.get_instance().fill(Theme.BACKGROUND)
             # re render all entities
             HANDLER.render_all()
             # push frame
