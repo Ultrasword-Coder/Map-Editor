@@ -79,10 +79,10 @@ def fill_instance(color: tuple) -> None:
 
 def change_framebuffer(w: int, h: int, f: int) -> None:
     """change a framebuffer"""
-    global FRAMEBUFFER, FB_HEIGT, FB_WIDTH
+    global FRAMEBUFFER, FB_HEIGHT, FB_WIDTH
     FRAMEBUFFER = pygame.Surface((w, h), flags=f).convert()
     FB_WIDTH = w
-    FB_HEIGT = h
+    FB_HEIGHT = h
 
 
 def get_framebuffer():
@@ -139,4 +139,4 @@ def draw(surface, pos: tuple) -> None:
 
 def mouse_window_to_framebuffer(mouse_pos: tuple) -> tuple:
     """Return the framebuffer coords of the mouse"""
-    return mouse_pos[0] / WIDTH * FB_WIDTH, mouse_pos[1] / HEIGHT * FB_HEIGHT
+    return (mouse_pos[0] / WIDTH * FB_WIDTH, mouse_pos[1] / HEIGHT * FB_HEIGHT)

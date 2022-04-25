@@ -4,7 +4,7 @@ from . import WindowObject, art
 
 from engine import filehandler, spritesheet, state
 from engine import eventhandler,animation, user_input
-from engine import window, spritesheet
+from engine import window, spritesheet, maths, clock
 from engine.globals import *
 
 from scripts.globals import *
@@ -20,6 +20,7 @@ class SideBarObject(WindowObject.WindowObject):
         super().__init__(0, 0, 0, 0, parent_object)
         
         self.sprite_data = None
+        state.CURRENT.remove_object(self.object_id)
     
     def update(self, dt: float):
         """Update function"""
@@ -30,8 +31,9 @@ class SideBarObject(WindowObject.WindowObject):
         """Empty render function"""
         # just render it
         if self.sprite and self.dirty:
-            print("SideBar.py      | ", self.object_id, self.rect)
-            window.get_framebuffer().blit(self.sprite, (self.rect.x, self.rect.y))
+            ppos = self.parent.get_rel_pos((self.rect.x, self.rect.y - self.parent.offset[1]))
+            # print("SideBar.py      | ", self.object_id, ppos)
+            self.parent.image.blit(self.sprite, ppos)
             state.CURRENT.dirty = True
             self.dirty = False
 
@@ -52,8 +54,8 @@ class SideBar(WindowObject.WindowObject):
     def __init__(self, l: float, t: float, r: float, b: float, parent_object = None):
         """Sidebar constructor"""
         super().__init__(l, t, r, b, parent_object)
-        self.y_scrolling = 0
         self.grid_count = 0
+        self.max_y = 100
 
         # grid is the children stuff
         self.grid = self.children
@@ -61,7 +63,31 @@ class SideBar(WindowObject.WindowObject):
     
     def update(self, dt: float):
         """Update function"""
-        pass
+        # get mouse scrolling
+        # print(user_input.get_mouse_pos(), window.mouse_window_to_framebuffer(user_input.get_mouse_pos()))
+        if self.is_hovering():
+            self.offset[1] -= user_input.y_scroll * 800 * dt
+            self.offset[1] = maths.clamp(self.offset[1], 0, self.max_y - self.rect.h)
+            if user_input.y_scroll:
+                # print(self.offset[1])
+                self.set_all_dirty()
+    
+    def render(self):
+        """Default Render function"""
+        # only render if dirty
+        if self.dirty:
+            # if this is dirty, all children are dirty
+            for i in self.children:
+                self.set_all_dirty()
+            print("SideBar.py      | ", self.object_id, self.rect)
+            self.image.fill(self.back_color)
+            # render children
+            for child in self.children:
+                child.update(clock.delta_time)
+                child.render()
+            window.get_framebuffer().blit(self.image, (self.rect.x, self.rect.y))
+            state.CURRENT.dirty = True
+            self.dirty = False
 
     def add_item(self, sprite_path: str, obj):
         """Add a new SideBarObject"""
@@ -94,7 +120,9 @@ class SideBar(WindowObject.WindowObject):
                 self.empty_grid_pos.append(i)
         if not f:
             self.grid_count = len(self.grid)
-
+        
+        # calculate new max_y
+        self.max_y = max(self.max_y, child.rect.bottom)
 
     def get_empty_grid_pos(self):
         """Get an empty grid pos"""

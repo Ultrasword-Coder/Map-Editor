@@ -61,6 +61,7 @@ class WindowObject(handler.PersistentObject):
         self.dirty = True
         self.back_color = (255, 255, 255)
         self.children = []
+        self.offset = [0, 0]
 
         # grids
         self.grid_spacing = [0, 0]
@@ -78,9 +79,9 @@ class WindowObject(handler.PersistentObject):
         else:
             # fullscreen
             self.rect.x = window.FB_WIDTH * l
-            self.rect.y = window.FB_HEIGT * t
+            self.rect.y = window.FB_HEIGHT * t
             self.rect.w = window.FB_WIDTH * (r - l)
-            self.rect.h = window.FB_HEIGT * (b - t)
+            self.rect.h = window.FB_HEIGHT * (b - t)
         
         # settings
         self.image = filehandler.make_surface(int(self.rect.w), int(self.rect.h), flags=filehandler.SRC_ALPHA)
@@ -93,7 +94,6 @@ class WindowObject(handler.PersistentObject):
 
     def start(self):
         """Start method"""
-        self.update(0)
         self.dirty = True
         self.render()
 
@@ -112,7 +112,7 @@ class WindowObject(handler.PersistentObject):
 
     def is_hovering(self) -> bool:
         """Checks if mouse is hovering over the object"""
-        mpos = user_input.get_mouse_pos()
+        mpos = window.mouse_window_to_framebuffer(user_input.get_mouse_pos())
         if mpos[0] < self.rect.x or mpos[0] > self.rect.w + self.rect.x:
             return False
         if mpos[1] < self.rect.y or mpos[1] > self.rect.y + self.rect.h:
@@ -157,7 +157,7 @@ class WindowObject(handler.PersistentObject):
         """Create a child object and return it"""
         child = object_type(l, t, r, h, self)
         self.apply_all_transformations(child)
-        self.children.append(child.object_id)
+        self.children.append(child)
         return child
 
     def apply_all_transformations(self, child):
@@ -178,8 +178,8 @@ class WindowObject(handler.PersistentObject):
 
     def set_all_dirty(self):
         """Set all children to be dirty"""
-        for i in self.children:
-            state.CURRENT.p_objects[i].set_all_dirty()
+        for child in self.children:
+            child.set_all_dirty()
         self.dirty = True
 
     def get_rel_pos(self, position: tuple) -> tuple:

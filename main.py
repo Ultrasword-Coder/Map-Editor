@@ -35,6 +35,8 @@ child.load_spritesheet("assets/spritesheets/grass.json")
 
 print(HANDLER.update_order)
 
+print(window.FB_HEIGHT)
+
 # ----------------------------------------------------------------------- #
 
 
