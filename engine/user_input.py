@@ -34,7 +34,6 @@ def update():
 
 # mouse
 mouse = [False for i in range(4)]
-mouse_clicked = set()
 x_pos, y_pos = 0, 0
 x_scroll, y_scroll = 0, 0
 x_move, y_move = 0, 0
@@ -45,9 +44,6 @@ def mouse_button_press(key_event):
     """Sets a mouse button to be pressed"""
     if key_event.button < 4:
         mouse[key_event.button] = True
-        mouse_clicked.add(key_event.button)
-        return
-    mouse_scroll_update(key_event)
 
 
 def mouse_button_release(key_event):
@@ -56,19 +52,9 @@ def mouse_button_release(key_event):
         mouse[key_event.button] = False
 
 
-def mouse_button_clicked(key: int):
-    """If mouse button was clicked"""
-    return key in mouse_clicked
-
-
 def mouse_scroll_update(scroll_event):
     """Mouse scroll update"""
-    global y_scroll
-    # even is up, odd is down
-    direction = scroll_event.button % 2 == 0
-    y_scroll = -scroll_event.button//2
-    if direction:
-        y_scroll = scroll_event.button//2
+    print(scroll_event)
 
 
 def mouse_move_update(move_event):
@@ -80,8 +66,6 @@ def mouse_move_update(move_event):
 
 def get_mouse_pos():
     """Get mouse position relative to the screen"""
-    # convert to framebuffer area?
-    
     return x_pos * x_ratio, y_pos * y_ratio
 
 
@@ -90,13 +74,4 @@ def update_ratio(width, height, o_width, o_height):
     global x_ratio, y_ratio
     x_ratio = o_width / width
     y_ratio = o_height / height
-
-
-def update():
-    """Updates keyboard - clears the pressed set"""
-    global y_scroll, x_scroll
-    pressed.clear()
-    mouse_clicked.clear()
-    y_scroll = 0
-    x_scroll = 0
 

@@ -150,7 +150,7 @@ class SideBar(WindowObject.WindowObject):
     
     def load_spritesheet(self, path: str):
         """Load a spritesheet and yeet into the sidebar"""
-        data = filehandler.load_json(path)
+        data = filehandler.get_json_data(path)
         img_path = data[SIDEBAR_SS_IMG]
         width = data[SIDEBAR_SS_WIDTH]
         height = data[SIDEBAR_SS_HEIGHT]
