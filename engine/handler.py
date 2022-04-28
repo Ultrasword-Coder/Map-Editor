@@ -16,6 +16,8 @@ class ObjectData:
     Used to hold data for setting object data
     """
 
+    __slots__ = ['x', 'y', 'w', 'h']
+
     x: int
     y: int
     w: int
@@ -37,14 +39,16 @@ class Rect:
     Wow, amazing
     """
 
+    __slots__ = ['x', 'y', 'w', 'h', 'cx', 'cy']
+
     x: float
     y: float
     w: float
     h: float
 
     # chunk pos
-    cx: int = 0
-    cy: int = 0
+    cx: int
+    cy: int
 
     def __init__(self, x: int, y: int, w: int, h: int):
         """Rect constructor"""
@@ -170,6 +174,8 @@ class Touching:
     - I wish Python had Structs
     - not ctypes.Structure >:C
     """
+
+    __slots__ = ['left', 'top', 'right', 'bottom']
 
     left: bool
     top: bool
