@@ -17,7 +17,6 @@ from scripts import art, WindowObject
 from scripts.globals import *
 
 
-
 class Editor(WindowObject.WindowObject):
     """
     Editor to edit the world!
