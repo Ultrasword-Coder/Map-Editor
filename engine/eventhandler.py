@@ -21,9 +21,10 @@ def add_event(event_data_block):
 
 def update_events():
     """Update all events with registered objects"""
-    for event in events:
-        call_event(event.eid, event.data)
-    events.clear()
+    if events:
+        for event in events:
+            call_event(event.eid, event.data)
+        events.clear()
 
 
 REGISTERED_EVENTS = {} # a eid and event pair
@@ -36,14 +37,17 @@ FUNC_REG_ID = 0
 
 def register_event(eid: int):
     """Register an event ID - just an integer value"""
-    global REGISTERED_EVENTS, REGISTERED_OBJECTS
-    # create registries within the dicts
+    global REGISTERED_EVENTS, REGISTERED_OBJECTS, EVENT_ID_COUNT
+    # create registries within the dictionaries
     REGISTERED_EVENTS[eid] = EventRegistry(eid)
+
+    EVENT_ID_COUNT += 1
+    REGISTERED_EVENTS[eid].eid = EVENT_ID_COUNT
     REGISTERED_OBJECTS[eid] = {}
-    return eid
+    return REGISTERED_EVENTS[eid]
 
 
-def register_func_to_event(eid, func):
+def register_func_to_event(eid, func) -> int:
     """Register a function/object to an event"""
     global REGISTERED_OBJECTS, FUNC_REG_ID
     # if not registered, register the event
@@ -64,8 +68,12 @@ def remove_func_id(id):
             data.pop(id)
 
 
-def call_event(eid, data):
-    """Call all functions registered into the eid"""
+def call_event(eid, data) -> None:
+    """
+    Call all functions registered into the eid
+    - given the EID
+    - data: dict
+    """
     global REGISTERED_OBJECTS, REGISTERED_EVENTS
     for e, func in REGISTERED_OBJECTS[eid].items():
         # registered objects
@@ -80,29 +88,15 @@ class EventDataBlock:
     - eid - the id for the event to be accessed in the REGISTERED_EVENTS dict
     - data - a dict containing event information
     """
+
     eid: int
     data: dict
+
 
 class EventRegistry:
     def __init__(self, eid):
         """Event ID - only holds the eid - probably bad memory management lol"""
         self.eid = eid
-
-
-class Event:
-    def __init__(self, data: dict, eid=0):
-        """Event constructor"""
-        self.data = data
-        self.eid = eid if eid > 0 else Event.gen_event_id()
-    
-    @classmethod
-    def gen_event_id(cls):
-        """Generate Event ID classmethod"""
-        global EVENT_ID_COUNT
-        EVENT_ID_COUNT += 1
-        return EVENT_ID_COUNT
-
-
 
 # ------------ error ---------------- #
 class RegistryNotFound(Exception):

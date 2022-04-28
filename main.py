@@ -7,6 +7,7 @@ from engine import spritesheet, eventhandler
 from engine.globals import *
 
 from scripts import WindowObject, SideBar, Editor
+from scripts import art
 from scripts.globals import *
 
 # ------------------------- start up stuff ------------------------------ #
@@ -38,6 +39,7 @@ child.load_spritesheet("assets/spritesheets/grass.json")
 
 editor = container.create_child(0.385, 0.01, 0.995, 0.995, Editor.Editor)
 editor.set_background_color(Theme.SECONDARY)
+art.set_current_editor(editor)
 
 # ----------------------------------------------------------------------- #
 
@@ -57,6 +59,7 @@ while running:
     # update keyboard and mouse
     # print(window.mouse_window_to_framebuffer(user_input.get_mouse_pos()))
     user_input.update()
+    eventhandler.update_events()
     # for loop through events
     for e in pygame.event.get():
         # handle different events

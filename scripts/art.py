@@ -2,6 +2,10 @@
 art.py contains the data required for editing the tilemap
 """
 
+from engine import filehandler
+from engine.globals import *
+
+
 # stores data for the current editor object
 # form editor.py in scripts
 CURRENT_EDITOR = None
@@ -20,9 +24,11 @@ class Brush:
     - brush contains a sprite data, including path and data
     """
 
-    def __init__(self, sprite_data):
+    def __init__(self, sprite_data, parent):
         """Brush object constructor"""
         self.sprite_data = sprite_data
         self.sprite = sprite_data.tex
+        self.resized = filehandler.scale(self.sprite, CHUNK_TILE_AREA)
+        self.parent = parent
 
 

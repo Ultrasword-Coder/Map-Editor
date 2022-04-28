@@ -10,6 +10,10 @@ SIDEBAR_SS_TILES = "sstiles"
 SIDEBAR_SS_XSPACE = "ssxspace"
 SIDEBAR_SS_YSPACE = "ssyspace"
 
+SIDEBAR_DATA_X = "sdata_x"
+SIDEBAR_DATA_Y = "sdata_y"
+SIDEBAR_DATA_IMG = "sdata_img"
+
 
 # color theme
 class Theme:
@@ -19,3 +23,10 @@ class Theme:
     TERTIARY = (0, 35, 61)
 
     EDITOR = (255, 255, 255)
+
+
+# menu butons and stuff
+class Menu:
+
+    FILL = False
+    ERASE = False

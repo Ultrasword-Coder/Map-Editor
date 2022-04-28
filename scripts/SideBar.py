@@ -24,7 +24,6 @@ class SideBarObject(WindowObject.WindowObject):
     def __init__(self, l, t, r, b, parent_object=None):
         """SideBarObejct constructor"""
         super().__init__(0, 0, 0, 0, parent_object)
-        
         self.sprite_data = None
         self.brush_object = None
 
@@ -34,7 +33,9 @@ class SideBarObject(WindowObject.WindowObject):
         """Update function"""
         # print(self.rect, window.mouse_window_to_framebuffer(user_input.get_mouse_pos()))
         if self.is_clicked(offy = -self.offset[1]):
-            print(f"Item: {self.object_id} clicked")
+            print(f"Item:     | {self.object_id} clicked")
+            if self.brush_object:
+                art.CURRENT_EDITOR.set_brush(self.brush_object)
 
     def render(self):
         """Empty render function"""
@@ -53,6 +54,19 @@ class SideBarObject(WindowObject.WindowObject):
             # leave for now
             draw.DEBUG_DRAW_RECT(self.parent.image, self.rect, offset=(self.offset[0], -self.offset[1]))
 
+    # --------------- methods --------------- #
+
+    def add_to_grid(self, chunk, data: dict):
+        """Add to grid"""
+        if self.sprite_data.index < 0:
+            # it is not from a sprite sheet
+            chunk.set_tile_at(chunk.create_grid_tile(data[SIDEBAR_DATA_X], data[SIDEBAR_DATA_Y], data[SIDEBAR_DATA_IMG]))
+        else:
+            # it is from a sprite sheet
+            # TODO - CHANGE THE COLLIDE THING
+            # MAKE IT TOGGLEABLE FROM GLOBAL CONTEXT
+            chunk.set_tile_at(spritesheet.SpriteTile(data[SIDEBAR_DATA_X], data[SIDEBAR_DATA_Y], 0, self.sprite_data))
+
     def set_sprite_data(self, data):
         """Set sprite data"""
         # data comes in the form of a SpriteData object from spritesheet.SpriteData
@@ -60,7 +74,7 @@ class SideBarObject(WindowObject.WindowObject):
         if self.sprite_data:
             self.sprite = filehandler.scale(self.sprite_data.tex, (int(self.rect.w), int(self.rect.h)))
             # create sprite data
-            self.brush_object = art.Brush(self.sprite_data)
+            self.brush_object = art.Brush(self.sprite_data, self)
 
 
 class SideBar(WindowObject.WindowObject):
@@ -111,9 +125,8 @@ class SideBar(WindowObject.WindowObject):
             
             # draw.DEBUG_DRAW_LINE(window.get_framebuffer(), (255, 0, 0), (self.rect.x, self.offset[1]), (self.rect.right, self.offset[1]))
 
-    def add_item(self, sprite_path: str, obj):
+    def add_item(self, obj):
         """Add a new SideBarObject"""
-        obj.set_sprite(sprite_path)
         self.grid.append(obj)
         # set obj new position
         self.apply_all_transformations(obj)

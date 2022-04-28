@@ -54,18 +54,26 @@ class SpriteData:
     # not actually an int
     parent_object: int
 
-    def __init__(self, index: int, x: int, y: int, w: int, h: int, tex):
+    def __init__(self, index: int, x: int, y: int, w: int, h: int, img_path: str, tex):
         """Sprite data constructor"""
         self.index = index
         self.x = x
         self.y = y
         self.w = w
         self.h = h
+        self.image_path = img_path
         self.tex = tex
     
     def get_area(self) -> list:
         """Return a list for the area that the sprite tile takes up in the spritesheet"""
         return [self.x, self.y, self.w, self.h]
+    
+    @staticmethod
+    def create_data_from_single_image(image_path: str):
+        """Create a SpriteData object from a single image"""
+        img = filehandler.get_image(image_path)
+        size = img.get_size()
+        return SpriteData(-1, 0, 0, size[0], size[1], image_path, img)
 
 
 # ------------- SpriteTile ----------------- #
@@ -108,10 +116,10 @@ class SpriteTile(Tile):
         self.data[SPRITETILE_SHEET_INDEX_KEY] = sprite_data.index
 
 
-    def render(self, images: dict, offset: tuple = (0, 0)) -> None:
+    def render(self, surface, images: dict, offset: tuple = (0, 0)) -> None:
         """Render function for this sprite tile"""
         if self.img:
-            window.FRAMEBUFFER.blit(images[self.sprite_hashed_name], (self.x + offset[0], self.y + offset[1]))
+            surface.blit(images[self.sprite_hashed_name], (self.x + offset[0], self.y + offset[1]))
     
     def cache_image(self, cache: dict) -> None:
         """Cache the image"""
@@ -181,7 +189,7 @@ class SpriteSheet:
             # get area
             new_img = filehandler.make_surface(self.sprite_area[0], self.sprite_area[1], filehandler.SRC_ALPHA)
             filehandler.crop_image(self.sheet, new_img, (left, top, left + self.sprite_area[0], top + self.sprite_area[1]))
-            sprite_tile = SpriteData(sprite_count, left, top, self.sprite_area[0], self.sprite_area[1], new_img)
+            sprite_tile = SpriteData(sprite_count, left, top, self.sprite_area[0], self.sprite_area[1], self.sheet_path, new_img)
             sprite_tile.parent_object = self
             self.sprites.append(sprite_tile)
             sprite_count += 1
