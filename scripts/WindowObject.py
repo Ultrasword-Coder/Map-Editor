@@ -106,7 +106,7 @@ class WindowObject(handler.PersistentObject):
                 self.set_all_dirty()
             print("WindowObject.py | ", self.object_id, self.rect)
             self.image.fill(self.back_color)
-            window.get_framebuffer().blit(self.image, (self.rect.x, self.rect.y))
+            window.get_framebuffer().blit(self.image, self.rect.topleft)
             state.CURRENT.dirty = True
             self.dirty = False
 

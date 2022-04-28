@@ -36,7 +36,6 @@ child.set_columns(3)
 # item.set_grid_pos(1)
 child.load_spritesheet("assets/spritesheets/grass.json")
 
-
 editor = container.create_child(0.385, 0.01, 0.995, 0.995, Editor.Editor)
 editor.set_background_color(Theme.SECONDARY)
 
@@ -49,7 +48,7 @@ running = True
 while running:
     # updates
     if state.CURRENT:
-        state.CURRENT.update(clock.delta_time)
+        state.CURRENT.handle_entities(clock.delta_time)
         # render
         if state.CURRENT.dirty:
             window.push_buffer((0,0))

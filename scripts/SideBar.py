@@ -26,6 +26,8 @@ class SideBarObject(WindowObject.WindowObject):
         super().__init__(0, 0, 0, 0, parent_object)
         
         self.sprite_data = None
+        self.brush_object = None
+
         state.CURRENT.remove_object(self.object_id)
 
     def update(self, dt: float):
@@ -53,9 +55,12 @@ class SideBarObject(WindowObject.WindowObject):
 
     def set_sprite_data(self, data):
         """Set sprite data"""
+        # data comes in the form of a SpriteData object from spritesheet.SpriteData
         self.sprite_data = data
         if self.sprite_data:
             self.sprite = filehandler.scale(self.sprite_data.tex, (int(self.rect.w), int(self.rect.h)))
+            # create sprite data
+            self.brush_object = art.Brush(self.sprite_data)
 
 
 class SideBar(WindowObject.WindowObject):
