@@ -78,6 +78,11 @@ def mouse_move_update(move_event):
     x_pos, y_pos = move_event.pos[0], move_event.pos[1]
 
 
+def is_mouse_button_press(key: int) -> bool:
+    """Check if a mouse button was pressed"""
+    return mouse[key]
+
+
 def get_mouse_pos():
     """Get mouse position relative to the screen"""
     # convert to framebuffer area?

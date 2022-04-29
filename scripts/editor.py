@@ -44,6 +44,7 @@ class Editor(WindowObject.WindowObject):
         self.mouse_world_chunk_pos = [0, 0]
         self.mouse_chunk_tile_pos = [0, 0]
         self.move_speed = 200
+        self.prev_mouse_world_tile = [0, 0]
 
         self.brush = None
 
@@ -79,7 +80,7 @@ class Editor(WindowObject.WindowObject):
             self.dirty = True
             
             # get world tile position
-            mpos = self.get_rel_pos(window.mouse_window_to_framebuffer(user_input.get_mouse_pos()))
+            mpos = self.get_rel_pos(user_input.get_mouse_pos())
             self.mouse_world_tile_pos[0] = int((mpos[0] - self.viewport_rect.x - self.offset[0]) // CHUNK_TILE_WIDTH)
             self.mouse_world_tile_pos[1] = int((mpos[1] - self.viewport_rect.y - self.offset[1]) // CHUNK_TILE_HEIGHT)
 
@@ -97,8 +98,10 @@ class Editor(WindowObject.WindowObject):
 
 
             # also check if clicked
-            if self.is_clicked():
-                print("clicked", self.mouse_world_tile_pos, self.mouse_world_chunk_pos, self.mouse_chunk_tile_pos)
+            if self.is_clicked() or (user_input.is_mouse_button_press(1) and self.prev_mouse_world_tile != self.mouse_world_tile_pos):
+                self.prev_mouse_world_tile[0] = self.mouse_world_tile_pos[0]
+                self.prev_mouse_world_tile[1] = self.mouse_world_tile_pos[1]
+                # print("clicked", self.mouse_world_tile_pos, self.mouse_world_chunk_pos, self.mouse_chunk_tile_pos)
                 if self.brush and self.brush.parent:
                     if not self.world.get_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1]):
                         self.world.make_template_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1])
@@ -118,13 +121,17 @@ class Editor(WindowObject.WindowObject):
 
             # draw debug
             if self.brush:
+                # TODO - polish the outline
                 rel_pos = self.get_rel_pos(user_input.get_mouse_pos())
-                relx = (rel_pos[0] - self.viewport_rect.x - self.offset[0]) // CHUNK_TILE_WIDTH * CHUNK_TILE_WIDTH
-                rely = (rel_pos[1] - self.viewport_rect.y - self.offset[1]) // CHUNK_TILE_HEIGHT * CHUNK_TILE_HEIGHT
+                relx = (rel_pos[0] - self.viewport_rect.x) // CHUNK_TILE_WIDTH * CHUNK_TILE_WIDTH
+                rely = (rel_pos[1] - self.viewport_rect.y) // CHUNK_TILE_HEIGHT * CHUNK_TILE_HEIGHT
+                
+                # get the tile offset
                 rox = self.offset[0] % CHUNK_TILE_WIDTH
                 roy = self.offset[1] % CHUNK_TILE_HEIGHT
+                self.brush.resized.set_alpha(100)
                 self.viewport.blit(self.brush.resized, (relx+rox, rely+roy))
-                # self.viewport.blit(self.brush.resized, ((rel_pos[0]-self.viewport_rect.x)//CHUNK_TILE_WIDTH*CHUNK_TILE_WIDTH+self.offset[0], (rel_pos[1]-self.viewport_rect.y)//CHUNK_TILE_HEIGHT*CHUNK_TILE_HEIGHT+self.offset[1]))
+                self.brush.resized.set_alpha(255)
             draw.DRAW_CIRCLE(self.viewport, (0, 255, 255), (CHUNK_TILE_WIDTH // 2 + self.offset[0], CHUNK_TILE_HEIGHT // 2 + self.offset[1]), CHUNK_TILE_WIDTH//2)
             # draw viewport
             self.render_grid()

@@ -112,7 +112,7 @@ class WindowObject(handler.PersistentObject):
 
     def is_hovering(self, offx: int = 0, offy: int = 0) -> bool:
         """Checks if mouse is hovering over the object"""
-        mpos = window.mouse_window_to_framebuffer(user_input.get_mouse_pos())
+        mpos = user_input.get_mouse_pos()
         if mpos[0] < self.rect.x + offx or mpos[0] > self.rect.x + self.rect.w + offx:
             return False
         if mpos[1] < self.rect.y + offy or mpos[1] > self.rect.y + self.rect.h + offy:

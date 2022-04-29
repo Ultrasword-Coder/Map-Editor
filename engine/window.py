@@ -139,4 +139,5 @@ def draw(surface, pos: tuple) -> None:
 
 def mouse_window_to_framebuffer(mouse_pos: tuple) -> tuple:
     """Return the framebuffer coords of the mouse"""
+    # is buggy
     return (mouse_pos[0] / WIDTH * FB_WIDTH, mouse_pos[1] / HEIGHT * FB_HEIGHT)
