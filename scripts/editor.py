@@ -91,6 +91,7 @@ class Editor(WindowObject.WindowObject):
             # get chunk tile position
             self.mouse_chunk_tile_pos[0] = self.mouse_world_tile_pos[0] % CHUNK_WIDTH
             self.mouse_chunk_tile_pos[1] = self.mouse_world_tile_pos[1] % CHUNK_HEIGHT
+            print(self.mouse_world_tile_pos, self.mouse_world_chunk_pos, self.mouse_chunk_tile_pos)
 
             #   get the relative position to viewport   convert to grid positions       add offset so that they stay in each tile
             # x = (rel_pos[0]-self.viewport_rect.x)//CHUNK_TILE_WIDTH*CHUNK_TILE_WIDTH+(self.offset[0]%CHUNK_TILE_WIDTH)
@@ -111,7 +112,7 @@ class Editor(WindowObject.WindowObject):
         # check if we should save
         if user_input.is_key_pressed(pygame.K_LCTRL) and user_input.is_key_clicked(pygame.K_s):
             print("SAVING LEVEL! - not actually saving cuz its bad")
-            # serialize.save_to_file("test.json", self.world.serialize())
+            serialize.save_to_file("test.json", self.world.serialize())
 
     def render(self):
         """Render the editor + grid"""
