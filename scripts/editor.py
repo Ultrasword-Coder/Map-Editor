@@ -10,7 +10,7 @@ import pygame
 
 from engine import world, user_input, filehandler
 from engine import draw, eventhandler, clock
-from engine import window, state, handler
+from engine import window, state, handler, serialize
 from engine.globals import *
 
 from scripts import art, WindowObject
@@ -107,6 +107,11 @@ class Editor(WindowObject.WindowObject):
                         self.world.make_template_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1])
                     self.brush.parent.add_to_grid(self.world.get_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1]), 
                             {SIDEBAR_DATA_X: self.mouse_chunk_tile_pos[0], SIDEBAR_DATA_Y: self.mouse_chunk_tile_pos[1], SIDEBAR_DATA_IMG: self.brush.sprite_data.image_path})
+        
+        # check if we should save
+        if user_input.is_key_pressed(pygame.K_LCTRL) and user_input.is_key_clicked(pygame.K_s):
+            print("SAVING LEVEL! - not actually saving cuz its bad")
+            # serialize.save_to_file("test.json", self.world.serialize())
 
     def render(self):
         """Render the editor + grid"""
