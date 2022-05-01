@@ -91,7 +91,7 @@ class Editor(WindowObject.WindowObject):
             # get chunk tile position
             self.mouse_chunk_tile_pos[0] = self.mouse_world_tile_pos[0] % CHUNK_WIDTH
             self.mouse_chunk_tile_pos[1] = self.mouse_world_tile_pos[1] % CHUNK_HEIGHT
-            print(self.mouse_world_tile_pos, self.mouse_world_chunk_pos, self.mouse_chunk_tile_pos)
+            # print(self.mouse_world_tile_pos, self.mouse_world_chunk_pos, self.mouse_chunk_tile_pos)
 
             #   get the relative position to viewport   convert to grid positions       add offset so that they stay in each tile
             # x = (rel_pos[0]-self.viewport_rect.x)//CHUNK_TILE_WIDTH*CHUNK_TILE_WIDTH+(self.offset[0]%CHUNK_TILE_WIDTH)
@@ -108,10 +108,22 @@ class Editor(WindowObject.WindowObject):
                         self.world.make_template_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1])
                     self.brush.parent.add_to_grid(self.world.get_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1]), 
                             {SIDEBAR_DATA_X: self.mouse_chunk_tile_pos[0], SIDEBAR_DATA_Y: self.mouse_chunk_tile_pos[1], SIDEBAR_DATA_IMG: self.brush.sprite_data.image_path})
-        
+            elif (user_input.is_mouse_button_press(3) and self.prev_mouse_world_tile != self.mouse_world_tile_pos):
+                self.prev_mouse_world_tile[0] = self.mouse_world_tile_pos[0]
+                self.prev_mouse_world_tile[1] = self.mouse_world_tile_pos[1]
+                if not self.world.get_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1]):
+                    self.world.make_template_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1])
+                tile = self.world.get_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1]).tile_map[self.mouse_chunk_tile_pos[1]][self.mouse_chunk_tile_pos[0]]
+                tile.x = 0
+                tile.y = 0
+                tile.img = None
+                tile.collide = 0
+                tile.tilestats = None
+                tile.data = {}
+
         # check if we should save
         if user_input.is_key_pressed(pygame.K_LCTRL) and user_input.is_key_clicked(pygame.K_s):
-            print("SAVING LEVEL! - not actually saving cuz its bad")
+            print("SAVING LEVEL!")
             serialize.save_to_file("test.json", self.world.serialize())
 
     def render(self):

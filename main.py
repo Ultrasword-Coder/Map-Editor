@@ -27,10 +27,15 @@ state.push_state(HANDLER)
 container = WindowObject.WindowObject(0, 0, 1, 1)
 container.set_background_color(Theme.BACKGROUND)
 
-child = container.create_child(0.005, 0.01, 0.38, 0.995, SideBar.SideBar)
+sidebar_container = container.create_child(0.005, 0.01, 0.38, 0.995, SideBar.SideBarContainer)
+sidebar_container.set_secondary_color(Theme.SECONDARY)
+
+child = sidebar_container.create_child(0.01, 0.01, 0.99, 0.99, SideBar.SideBar)
 child.set_background_color(Theme.SECONDARY)
 child.set_grid_spacing(10, 10)
 child.set_columns(3)
+
+sidebar_container.add_sidebar_object(child)
 
 # item = child.create_child(0, 0, 0, 0, SideBar.SideBarObject)
 # item.set_sprite("assets/art.png")

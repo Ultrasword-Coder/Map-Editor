@@ -99,8 +99,6 @@ class SpriteTile(Tile):
     sprite_data: SpriteData
     sprite_hashed_name: str
 
-    tile_type: str = "sprite_tile"
-
     def __init__(self, x: int, y: int, collide: int, sprite_data):
         """Sprite Tile constructor"""
         super().__init__(x, y, None, collide)
