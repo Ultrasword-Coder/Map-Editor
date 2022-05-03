@@ -14,6 +14,9 @@ SIDEBAR_DATA_X = "sdata_x"
 SIDEBAR_DATA_Y = "sdata_y"
 SIDEBAR_DATA_IMG = "sdata_img"
 
+CONFIG_PATH = "config.json"
+CONFIG_FILES_ARRAY = "startup-files"
+
 
 # color theme
 class Theme:

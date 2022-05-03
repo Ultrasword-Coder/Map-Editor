@@ -1,4 +1,7 @@
 import pygame
+import os
+import json
+
 from engine import handler, filehandler, user_input
 from engine import window, maths, serialize
 from engine import state

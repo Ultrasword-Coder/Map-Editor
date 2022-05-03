@@ -104,7 +104,7 @@ class Editor(WindowObject.WindowObject):
             # y = (rel_pos[1]-self.viewport_rect.y)//CHUNK_TILE_HEIGHT*CHUNK_TILE_HEIGHT+(self.offset[1]%CHUNK_TILE_HEIGHT)
 
 
-            # also check if clicked
+            # for drawing
             if self.is_clicked() or (user_input.is_mouse_button_press(1) and self.prev_mouse_world_tile != self.mouse_world_tile_pos):
                 self.prev_mouse_world_tile[0] = self.mouse_world_tile_pos[0]
                 self.prev_mouse_world_tile[1] = self.mouse_world_tile_pos[1]
@@ -178,6 +178,10 @@ class Editor(WindowObject.WindowObject):
     def get_brush(self):
         """Get the brush"""
         return self.brush
+
+    def file_dragged(self, file):
+        """Load level from file"""
+        print("Loading level... not rly")
 
     # ------------ rendering world ------------- #
 

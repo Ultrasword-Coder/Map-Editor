@@ -258,7 +258,7 @@ class SideBarContainer(WindowObject.WindowObject):
         if self.is_hovering():
             if user_input.is_key_pressed(pygame.K_LSHIFT):
                 self.scroll_x += user_input.y_scroll
-                self.scroll_x = maths.clamp(self.scroll_x, 5, self.max_x_scroll)
+                self.scroll_x = maths.clamp(self.scroll_x, -self.max_x_scroll, 0)
                 self.dirty = True
             if self.sidebars:
                 self.sidebars[self.current_bar].update(dt)
@@ -271,8 +271,8 @@ class SideBarContainer(WindowObject.WindowObject):
             self.image.fill(self.back_color)
             self.top_bar_image.fill(self.secondary_color)
             # draw text onto topbar
-            for rendered_text, rect in self.topbars:
-                self.top_bar_image.blit(rendered_text, (rect.x + self.scroll_x, rect.y))
+            for i, (rendered_text, rect) in enumerate(self.topbars):
+                self.top_bar_image.blit(rendered_text, (rect.x + self.scroll_x + 10 * (i+1), rect.y))
             self.image.blit(self.top_bar_image, self.top_bar_rect.topleft)
             # render only the current child
             if self.sidebars:
@@ -317,7 +317,8 @@ class SideBarContainer(WindowObject.WindowObject):
         
         self.sidebars.append(sidebar)
         self.topbars.append((rendered_text, rect))
-        self.max_x_scroll += rect.w
+        if len(self.topbars) > 1:
+            self.max_x_scroll += rect.w
     
     def remove_sidebar_object(self, index):
         """Remove sidebar objects"""
