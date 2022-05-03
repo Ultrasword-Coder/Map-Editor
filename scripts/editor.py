@@ -17,6 +17,11 @@ from scripts import art, WindowObject
 from scripts.globals import *
 
 
+TILE_ART = 0
+ENTITY_ART = 1
+
+
+
 class Editor(WindowObject.WindowObject):
     """
     Editor to edit the world!
@@ -43,10 +48,11 @@ class Editor(WindowObject.WindowObject):
         self.mouse_world_tile_pos = [0, 0]
         self.mouse_world_chunk_pos = [0, 0]
         self.mouse_chunk_tile_pos = [0, 0]
-        self.move_speed = 200
+        self.move_speed = 300
         self.prev_mouse_world_tile = [0, 0]
 
         self.brush = None
+        self.art_type = TILE_ART
 
         art.set_current_editor(self)
         WindowObject.WindowObject.__init__(self, l, t, r, b, parent)
@@ -74,8 +80,8 @@ class Editor(WindowObject.WindowObject):
             if user_input.is_key_pressed(pygame.K_UP):
                 self.offset[1] += self.move_speed * dt
             # get user input
-            self.relative_center[0] = int(self.offset[0] // CHUNK_WIDTH_PIX)
-            self.relative_center[1] = int(self.offset[1] // CHUNK_HEIGHT_PIX)
+            self.relative_center[0] = int(-self.offset[0] // CHUNK_WIDTH_PIX)
+            self.relative_center[1] = int(-self.offset[1] // CHUNK_HEIGHT_PIX)
 
             self.dirty = True
             

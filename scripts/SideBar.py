@@ -96,6 +96,9 @@ class SideBar(WindowObject.WindowObject):
         self.grid = self.children
         self.empty_grid_pos = []
 
+        self.index = 0
+        self.name = "0"
+
         state.CURRENT.remove_object(self.object_id)
     
     def update(self, dt: float):
@@ -118,7 +121,7 @@ class SideBar(WindowObject.WindowObject):
         if self.dirty:
             # if this is dirty, all children are dirty
             self.set_all_dirty()
-            print("SideBar         | ", self.object_id, self.rect)
+            # ("SideBar         | ", self.object_id, self.rect)
             self.image.fill(self.back_color)
             # render children
             for child in self.children:
@@ -208,7 +211,11 @@ class SideBarContainer(WindowObject.WindowObject):
         """Side Bar Container constructor"""
         self.sidebars = []
         self.current_bar = 0
+        
+        self.topbars = []
         self.scroll_x = 0
+        self.max_x_scroll = 0
+        self.topbar_x_offset = 0
 
         self.secondary_color = (0, 0, 0)
         self.top_bar_frect = handler.Rect(0.01, 0.01, 0.99, 0.1)
@@ -219,6 +226,15 @@ class SideBarContainer(WindowObject.WindowObject):
         self.draw_area_rect = handler.Rect(0, 0, 0, 0)
 
         WindowObject.WindowObject.__init__(self, l, t, r, b, parent_object)
+
+        self.default_children_coordinates = (0.01, 0.01, 0.99, 0.99)
+
+        # rendered text
+        self.loaded_spritesheets = set()
+        self.font = filehandler.get_font(Theme.FONT_PATH).get_font_size(20)
+        self.info_text = self.font.render("Please Drag SpriteSheet File!", True, (0, 0, 0))
+        self.info_rect = self.info_text.get_rect()
+        self.info_rect.center = (self.rect.w / 2 + self.rect.x, self.rect.h / 2 + self.rect.y)
 
     def start(self):
         """Start"""
@@ -240,6 +256,10 @@ class SideBarContainer(WindowObject.WindowObject):
     def update(self, dt):
         """Update"""
         if self.is_hovering():
+            if user_input.is_key_pressed(pygame.K_LSHIFT):
+                self.scroll_x += user_input.y_scroll
+                self.scroll_x = maths.clamp(self.scroll_x, 5, self.max_x_scroll)
+                self.dirty = True
             if self.sidebars:
                 self.sidebars[self.current_bar].update(dt)
     
@@ -250,11 +270,15 @@ class SideBarContainer(WindowObject.WindowObject):
             print("SideBarContainer| ", self.object_id, self.rect)
             self.image.fill(self.back_color)
             self.top_bar_image.fill(self.secondary_color)
-            if self.top_bar_image:
-                self.image.blit(self.top_bar_image, self.top_bar_rect.topleft)
+            # draw text onto topbar
+            for rendered_text, rect in self.topbars:
+                self.top_bar_image.blit(rendered_text, (rect.x + self.scroll_x, rect.y))
+            self.image.blit(self.top_bar_image, self.top_bar_rect.topleft)
             # render only the current child
             if self.sidebars:
                 self.sidebars[self.current_bar].render()
+            else:
+                self.image.blit(self.info_text, self.info_rect)
             window.get_framebuffer().blit(self.image, self.rect.topleft)
             state.CURRENT.dirty = True
             self.dirty = False
@@ -281,5 +305,37 @@ class SideBarContainer(WindowObject.WindowObject):
 
     def add_sidebar_object(self, sidebar):
         """Add sidebar object"""
+        sidebar.index = len(self.sidebars)
+        sidebar.name = str(sidebar.index)
+
+        rendered_text = self.font.render(sidebar.name, True, (255, 255, 255), Theme.TERTIARY)
+        rect = rendered_text.get_rect()
+        # get rect pos
+        if self.topbars:
+            rect.x = self.topbars[-1][1].right
+        rect.y = 10
+        
         self.sidebars.append(sidebar)
+        self.topbars.append((rendered_text, rect))
+        self.max_x_scroll += rect.w
+    
+    def remove_sidebar_object(self, index):
+        """Remove sidebar objects"""
+        bar = self.sidebars.pop(index)
+        self.topbars.remove(bar.name)
+        
+    def file_dragged(self, file):
+        """Check if a file is correct"""
+        bar = self.create_child(0.01, 0.01, 0.99, 0.99, SideBar)
+        bar.set_background_color(Theme.SECONDARY)
+        bar.set_grid_spacing(10, 10)
+        bar.set_columns(3)
+        try:
+            # set some default parameters
+            bar.load_spritesheet(file)
+            self.add_sidebar_object(bar)
+            self.dirty = True
+            self.loaded_spritesheets.add(file)
+        except Exception as e:
+            print(e)
 

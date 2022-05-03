@@ -24,6 +24,8 @@ class Theme:
 
     EDITOR = (255, 255, 255)
 
+    FONT_PATH = "assets/CONSOLA.TTF"
+
 
 # menu butons and stuff
 class Menu:

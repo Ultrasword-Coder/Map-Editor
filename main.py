@@ -24,23 +24,24 @@ FPS = 60 # change fps if needed
 HANDLER = WindowObject.WindowObjectManager()
 state.push_state(HANDLER)
 
+# load font
+filehandler.get_font(Theme.FONT_PATH)
+
+
 container = WindowObject.WindowObject(0, 0, 1, 1)
 container.set_background_color(Theme.BACKGROUND)
 
 sidebar_container = container.create_child(0.005, 0.01, 0.38, 0.995, SideBar.SideBarContainer)
 sidebar_container.set_secondary_color(Theme.SECONDARY)
 
-child = sidebar_container.create_child(0.01, 0.01, 0.99, 0.99, SideBar.SideBar)
-child.set_background_color(Theme.SECONDARY)
-child.set_grid_spacing(10, 10)
-child.set_columns(3)
+# child = sidebar_container.create_child(0.01, 0.01, 0.99, 0.99, SideBar.SideBar)
+# child.set_background_color(Theme.SECONDARY)
+# child.set_grid_spacing(10, 10)
+# child.set_columns(3)
 
-sidebar_container.add_sidebar_object(child)
+# sidebar_container.add_sidebar_object(child)
 
-# item = child.create_child(0, 0, 0, 0, SideBar.SideBarObject)
-# item.set_sprite("assets/art.png")
-# item.set_grid_pos(1)
-child.load_spritesheet("assets/spritesheets/grass.json")
+art.set_current_sidebar(sidebar_container)
 
 editor = container.create_child(0.385, 0.01, 0.995, 0.995, Editor.Editor)
 editor.set_background_color(Theme.SECONDARY)
@@ -98,6 +99,8 @@ while running:
             pygame.display.update()
             # prevent re push
             window.INSTANCE_CHANGED = False
+        elif e.type == pygame.DROPFILE:
+            art.CURRENT_SIDEBAR.file_dragged(e.file)
 
     # update clock -- calculate delta time
     clock.update()
