@@ -17,6 +17,11 @@ from scripts import art, WindowObject
 from scripts.globals import *
 
 
+TILE_ART = 0
+ENTITY_ART = 1
+
+
+
 class Editor(WindowObject.WindowObject):
     """
     Editor to edit the world!
@@ -43,10 +48,11 @@ class Editor(WindowObject.WindowObject):
         self.mouse_world_tile_pos = [0, 0]
         self.mouse_world_chunk_pos = [0, 0]
         self.mouse_chunk_tile_pos = [0, 0]
-        self.move_speed = 200
+        self.move_speed = 300
         self.prev_mouse_world_tile = [0, 0]
 
         self.brush = None
+        self.art_type = TILE_ART
 
         art.set_current_editor(self)
         WindowObject.WindowObject.__init__(self, l, t, r, b, parent)
@@ -74,8 +80,8 @@ class Editor(WindowObject.WindowObject):
             if user_input.is_key_pressed(pygame.K_UP):
                 self.offset[1] += self.move_speed * dt
             # get user input
-            self.relative_center[0] = int(self.offset[0] // CHUNK_WIDTH_PIX)
-            self.relative_center[1] = int(self.offset[1] // CHUNK_HEIGHT_PIX)
+            self.relative_center[0] = int(-self.offset[0] // CHUNK_WIDTH_PIX)
+            self.relative_center[1] = int(-self.offset[1] // CHUNK_HEIGHT_PIX)
 
             self.dirty = True
             
@@ -98,7 +104,7 @@ class Editor(WindowObject.WindowObject):
             # y = (rel_pos[1]-self.viewport_rect.y)//CHUNK_TILE_HEIGHT*CHUNK_TILE_HEIGHT+(self.offset[1]%CHUNK_TILE_HEIGHT)
 
 
-            # also check if clicked
+            # for drawing
             if self.is_clicked() or (user_input.is_mouse_button_press(1) and self.prev_mouse_world_tile != self.mouse_world_tile_pos):
                 self.prev_mouse_world_tile[0] = self.mouse_world_tile_pos[0]
                 self.prev_mouse_world_tile[1] = self.mouse_world_tile_pos[1]
@@ -108,10 +114,22 @@ class Editor(WindowObject.WindowObject):
                         self.world.make_template_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1])
                     self.brush.parent.add_to_grid(self.world.get_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1]), 
                             {SIDEBAR_DATA_X: self.mouse_chunk_tile_pos[0], SIDEBAR_DATA_Y: self.mouse_chunk_tile_pos[1], SIDEBAR_DATA_IMG: self.brush.sprite_data.image_path})
-        
+            elif (user_input.is_mouse_button_press(3) and self.prev_mouse_world_tile != self.mouse_world_tile_pos):
+                self.prev_mouse_world_tile[0] = self.mouse_world_tile_pos[0]
+                self.prev_mouse_world_tile[1] = self.mouse_world_tile_pos[1]
+                if not self.world.get_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1]):
+                    self.world.make_template_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1])
+                tile = self.world.get_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1]).tile_map[self.mouse_chunk_tile_pos[1]][self.mouse_chunk_tile_pos[0]]
+                tile.x = 0
+                tile.y = 0
+                tile.img = None
+                tile.collide = 0
+                tile.tilestats = None
+                tile.data = {}
+
         # check if we should save
         if user_input.is_key_pressed(pygame.K_LCTRL) and user_input.is_key_clicked(pygame.K_s):
-            print("SAVING LEVEL! - not actually saving cuz its bad")
+            print("SAVING LEVEL!")
             serialize.save_to_file("test.json", self.world.serialize())
 
     def render(self):
@@ -160,6 +178,10 @@ class Editor(WindowObject.WindowObject):
     def get_brush(self):
         """Get the brush"""
         return self.brush
+
+    def file_dragged(self, file):
+        """Load level from file"""
+        print("Loading level... not rly")
 
     # ------------ rendering world ------------- #
 

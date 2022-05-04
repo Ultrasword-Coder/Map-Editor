@@ -1,4 +1,7 @@
 import pygame
+import os
+import json
+
 from engine import handler, filehandler, user_input
 from engine import window, maths, serialize
 from engine import state
@@ -104,7 +107,7 @@ class WindowObject(handler.PersistentObject):
             # if this is dirty, all children are dirty
             for i in self.children:
                 self.set_all_dirty()
-            print("WindowObject.py | ", self.object_id, self.rect)
+            # print("WindowObject.py | ", self.object_id, self.rect)
             self.image.fill(self.back_color)
             window.get_framebuffer().blit(self.image, self.rect.topleft)
             state.CURRENT.dirty = True

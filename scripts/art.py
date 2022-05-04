@@ -32,3 +32,11 @@ class Brush:
         self.parent = parent
 
 
+
+CURRENT_SIDEBAR = None
+
+def set_current_sidebar(sidebar):
+    """Set current sidebar"""
+    global CURRENT_SIDEBAR
+    CURRENT_SIDEBAR = sidebar
+

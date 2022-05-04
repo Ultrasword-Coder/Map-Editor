@@ -1,0 +1,5 @@
+{
+    "startup-files": [
+        "assets/spritesheets/grass.json"
+    ]
+}

@@ -7,7 +7,7 @@ from engine import spritesheet, eventhandler
 from engine.globals import *
 
 from scripts import WindowObject, SideBar, Editor
-from scripts import art
+from scripts import art, Parent
 from scripts.globals import *
 
 # ------------------------- start up stuff ------------------------------ #
@@ -21,25 +21,7 @@ window.change_framebuffer(1280, 720, pygame.SRCALPHA)
 # ------------------------------ your code ------------------------------ #
 FPS = 60 # change fps if needed
 
-HANDLER = WindowObject.WindowObjectManager()
-state.push_state(HANDLER)
-
-container = WindowObject.WindowObject(0, 0, 1, 1)
-container.set_background_color(Theme.BACKGROUND)
-
-child = container.create_child(0.005, 0.01, 0.38, 0.995, SideBar.SideBar)
-child.set_background_color(Theme.SECONDARY)
-child.set_grid_spacing(10, 10)
-child.set_columns(3)
-
-# item = child.create_child(0, 0, 0, 0, SideBar.SideBarObject)
-# item.set_sprite("assets/art.png")
-# item.set_grid_pos(1)
-child.load_spritesheet("assets/spritesheets/grass.json")
-
-editor = container.create_child(0.385, 0.01, 0.995, 0.995, Editor.Editor)
-editor.set_background_color(Theme.SECONDARY)
-art.set_current_editor(editor)
+HANDLER = Parent.ProjectWorld()
 
 # ----------------------------------------------------------------------- #
 
@@ -93,6 +75,8 @@ while running:
             pygame.display.update()
             # prevent re push
             window.INSTANCE_CHANGED = False
+        elif e.type == pygame.DROPFILE:
+            HANDLER.file_dragged(e.file)
 
     # update clock -- calculate delta time
     clock.update()
