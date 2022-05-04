@@ -91,7 +91,7 @@ class Editor(WindowObject.WindowObject):
             # get chunk tile position
             self.mouse_chunk_tile_pos[0] = self.mouse_world_tile_pos[0] % CHUNK_WIDTH
             self.mouse_chunk_tile_pos[1] = self.mouse_world_tile_pos[1] % CHUNK_HEIGHT
-            print(self.mouse_world_tile_pos, self.mouse_world_chunk_pos, self.mouse_chunk_tile_pos)
+            # print(self.mouse_world_tile_pos, self.mouse_world_chunk_pos, self.mouse_chunk_tile_pos)
 
             #   get the relative position to viewport   convert to grid positions       add offset so that they stay in each tile
             # x = (rel_pos[0]-self.viewport_rect.x)//CHUNK_TILE_WIDTH*CHUNK_TILE_WIDTH+(self.offset[0]%CHUNK_TILE_WIDTH)
