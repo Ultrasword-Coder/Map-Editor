@@ -117,15 +117,14 @@ class Editor(WindowObject.WindowObject):
             elif (user_input.is_mouse_button_press(3) and self.prev_mouse_world_tile != self.mouse_world_tile_pos):
                 self.prev_mouse_world_tile[0] = self.mouse_world_tile_pos[0]
                 self.prev_mouse_world_tile[1] = self.mouse_world_tile_pos[1]
-                if not self.world.get_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1]):
-                    self.world.make_template_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1])
-                tile = self.world.get_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1]).tile_map[self.mouse_chunk_tile_pos[1]][self.mouse_chunk_tile_pos[0]]
-                tile.x = 0
-                tile.y = 0
-                tile.img = None
-                tile.collide = 0
-                tile.tilestats = None
-                tile.data = {}
+                if self.world.get_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1]):        
+                    tile = self.world.get_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1]).tile_map[self.mouse_chunk_tile_pos[1]][self.mouse_chunk_tile_pos[0]]
+                    tile.x = 0
+                    tile.y = 0
+                    tile.img = None
+                    tile.collide = 0
+                    tile.tilestats = None
+                    tile.data = {}
 
         # check if we should save
         if user_input.is_key_pressed(pygame.K_LCTRL) and user_input.is_key_clicked(pygame.K_s):

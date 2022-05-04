@@ -262,6 +262,14 @@ class SideBarContainer(WindowObject.WindowObject):
                 self.dirty = True
             if self.sidebars:
                 self.sidebars[self.current_bar].update(dt)
+            mpos = user_input.get_mouse_pos()
+            for i, (rendered_text, rect) in enumerate(self.topbars):
+                print(rect, mpos[0] - self.scroll_x - self.rect.x - self.top_bar_rect.x + 10*(i+1), mpos[1] - self.rect.y - self.top_bar_rect.y)
+                # print(rect.collidepoint(mpos[0] - self.scroll_x + self.rect.x + self.top_bar_rect.x, mpos[1] + self.rect.y + self.top_bar_rect.y))
+                if user_input.mouse_button_clicked(1) and rect.collidepoint(mpos[0] - self.scroll_x + self.rect.x + self.top_bar_rect.x, mpos[1] + self.rect.y + self.top_bar_rect.y):
+                    self.current_bar = i
+                    print(i)
+                    self.dirty = True
     
     def render(self):
         """Render"""
@@ -271,6 +279,7 @@ class SideBarContainer(WindowObject.WindowObject):
             self.image.fill(self.back_color)
             self.top_bar_image.fill(self.secondary_color)
             # draw text onto topbar
+            mpos = user_input.get_mouse_pos()
             for i, (rendered_text, rect) in enumerate(self.topbars):
                 self.top_bar_image.blit(rendered_text, (rect.x + self.scroll_x + 10 * (i+1), rect.y))
             self.image.blit(self.top_bar_image, self.top_bar_rect.topleft)

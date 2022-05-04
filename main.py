@@ -13,7 +13,7 @@ from scripts.globals import *
 # ------------------------- start up stuff ------------------------------ #
 
 # create essential instances
-window.create_instance("Map Editor", 1280, 720, f=pygame.RESIZABLE)
+window.create_instance("Map Editor", 1280, 720)
 window.set_scaling(True)
 # should use framebuffer!
 window.change_framebuffer(1280, 720, pygame.SRCALPHA)
