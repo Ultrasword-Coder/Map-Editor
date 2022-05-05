@@ -194,8 +194,3 @@ class WindowObject(handler.PersistentObject):
         """Get coordinates rect"""
         return self.float_rect
 
-
-# ---------- register ------------- #
-handler.register_object_type(WindowObject.object_type, WindowObject)
-
-

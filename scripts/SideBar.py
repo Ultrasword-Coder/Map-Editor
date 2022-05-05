@@ -48,13 +48,7 @@ class SideBarObject(WindowObject.WindowObject):
             state.CURRENT.dirty = True
             self.dirty = False
             self.parent.dirty = True
-
-            # draw hitbox for clicking 
-            # to be removed
-            # there is an offset because we are adding world pos to rel pos
-            # leave for now
-            
-            draw.DEBUG_DRAW_RECT(self.parent.image, self.rect, offset=(-self.rect.x + ppos[0], -self.offset[1] - 95))
+            # draw.DEBUG_DRAW_RECT(self.parent.image, self.rect, offset=(-self.rect.x + ppos[0], -self.offset[1] - 95))
 
     # --------------- methods --------------- #
 
@@ -184,6 +178,12 @@ class SideBar(WindowObject.WindowObject):
         yspace = data[SIDEBAR_SS_YSPACE]
         sheet = spritesheet.get_sprite_sheet(img_path, width, height, xspace, yspace)
 
+        if tiles == "all":
+            tiles = []
+            for x in range(sheet.sprite_x_count):
+                for y in range(sheet.sprite_y_count):
+                    tiles.append(f"{x}.{y}")
+
         # add SideBarObjects with tile sprite
         for tile in tiles:
             obj = self.create_child(0, 0, 0, 0, SideBarObject)
@@ -262,26 +262,25 @@ class SideBarContainer(WindowObject.WindowObject):
                 self.dirty = True
             if self.sidebars:
                 self.sidebars[self.current_bar].update(dt)
-            mpos = user_input.get_mouse_pos()
+            mpos = self.get_rel_pos(user_input.get_mouse_pos())
             for i, (rendered_text, rect) in enumerate(self.topbars):
-                print(rect, mpos[0] - self.scroll_x - self.rect.x - self.top_bar_rect.x + 10*(i+1), mpos[1] - self.rect.y - self.top_bar_rect.y)
-                # print(rect.collidepoint(mpos[0] - self.scroll_x + self.rect.x + self.top_bar_rect.x, mpos[1] + self.rect.y + self.top_bar_rect.y))
-                if user_input.mouse_button_clicked(1) and rect.collidepoint(mpos[0] - self.scroll_x + self.rect.x + self.top_bar_rect.x, mpos[1] + self.rect.y + self.top_bar_rect.y):
+                if user_input.mouse_button_clicked(1) and rect.collidepoint(mpos[0] - (self.scroll_x + self.top_bar_rect.x + 10 * (i + 1)), mpos[1] - rect.y):
                     self.current_bar = i
-                    print(i)
                     self.dirty = True
     
     def render(self):
         """Render"""
         if self.dirty:
             self.set_all_dirty()
-            print("SideBarContainer| ", self.object_id, self.rect)
+            # print("SideBarContainer| ", self.object_id, self.rect)
             self.image.fill(self.back_color)
             self.top_bar_image.fill(self.secondary_color)
             # draw text onto topbar
-            mpos = user_input.get_mouse_pos()
             for i, (rendered_text, rect) in enumerate(self.topbars):
                 self.top_bar_image.blit(rendered_text, (rect.x + self.scroll_x + 10 * (i+1), rect.y))
+                
+                
+                draw.DEBUG_DRAW_RECT(self.top_bar_image, rect, (self.scroll_x + self.top_bar_rect.x + 10 * (i + 1), 0))
             self.image.blit(self.top_bar_image, self.top_bar_rect.topleft)
             # render only the current child
             if self.sidebars:
@@ -315,10 +314,11 @@ class SideBarContainer(WindowObject.WindowObject):
     def add_sidebar_object(self, sidebar):
         """Add sidebar object"""
         sidebar.index = len(self.sidebars)
-        sidebar.name = str(sidebar.index)
+        sidebar.name = f"{sidebar.index:^5}"
 
         rendered_text = self.font.render(sidebar.name, True, (255, 255, 255), Theme.TERTIARY)
         rect = rendered_text.get_rect()
+        draw.DEBUG_DRAW_RECT(rendered_text, rect)
         # get rect pos
         if self.topbars:
             rect.x = self.topbars[-1][1].right

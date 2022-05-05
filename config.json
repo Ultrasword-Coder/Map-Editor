@@ -1,5 +1,6 @@
 {
     "startup-files": [
-        "assets/spritesheets/grass.json"
+        "assets/spritesheets/grass.json",
+        "assets/spritesheets/art.json"
     ]
 }

@@ -13,7 +13,7 @@ from scripts.globals import *
 # ------------------------- start up stuff ------------------------------ #
 
 # create essential instances
-window.create_instance("Map Editor", 1280, 720)
+window.create_instance("Map Editor", 1280, 720, f=pygame.RESIZABLE)
 window.set_scaling(True)
 # should use framebuffer!
 window.change_framebuffer(1280, 720, pygame.SRCALPHA)
@@ -70,7 +70,7 @@ while running:
             # window maximized
             window.get_instance().fill(Theme.BACKGROUND)
             # re render all entities
-            HANDLER.render_all()
+            HANDLER.state.render_all()
             # push frame
             pygame.display.update()
             # prevent re push

@@ -1,0 +1,8 @@
+{
+    "ssimg": "assets/spritesheets/art.png",
+    "sswidth": 256,
+    "ssheight": 256,
+    "ssxspace": 0,
+    "ssyspace": 0,
+    "sstiles": "all"
+}
