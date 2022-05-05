@@ -8,7 +8,7 @@ create spritesheet
 """
 
 
-from engine import filehandler, window
+from engine import filehandler, window, world
 from engine.world import Tile, register_tile_type
 from engine.globals import *
 
@@ -113,7 +113,6 @@ class SpriteTile(Tile):
         self.data[SPRITETILE_SHEET_DATA_KEY] = sprite_data.parent_object.get_data()# an array of length 3
         self.data[SPRITETILE_SHEET_INDEX_KEY] = sprite_data.index
 
-
     def render(self, surface, images: dict, offset: tuple = (0, 0)) -> None:
         """Render function for this sprite tile"""
         if self.img:
@@ -147,6 +146,9 @@ class SpriteTile(Tile):
         
         result = SpriteTile(data[TILE_X_KEY], data[TILE_Y_KEY], data[TILE_COL_KEY], sheet.get_sprite(index))
         return result
+
+
+register_tile_type(SpriteTile.tile_type, SpriteTile)
 
 # ------------- SpriteSheet ----------------- #
 
@@ -213,6 +215,3 @@ class SpriteSheet:
     def get_data(self) -> list:
         """Get the data for this SpriteSheet"""
         return [self.sheet_path, self.spacing, self.sprite_area]
-
-# --------- yes
-register_tile_type(SpriteTile.tile_type, SpriteTile)

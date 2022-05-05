@@ -170,6 +170,14 @@ class Editor(WindowObject.WindowObject):
         """Load level from file"""
         print("Loading level... not rly")
 
+        data = None
+        try:
+            data = filehandler.get_json_data(file)
+        except Exception as e:
+            print(e)
+            return False
+        self.world = state.State.deserialize(data)
+
     # ------------ rendering world ------------- #
 
     def render_world(self, rel_center: tuple) -> None:

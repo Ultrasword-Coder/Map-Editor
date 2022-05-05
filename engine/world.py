@@ -34,8 +34,6 @@ def register_tile_type(name: str, tile_type: type):
     """Registers the object type"""
     TILE_TYPE_ACCESS_CONTAINER[name] = (tile_type, name)
 
-
-
 # ---------------- tile data ----------------
 
 @dataclass(init=False)
@@ -139,6 +137,9 @@ class Tile:
             result[TILE_STATS_KEY] = None
         result[TILE_TYPE_KEY] = self.tile_type
         result[TILE_EXTRA_DATA_KEY] = self.data
+
+        if not TILE_TYPE_ACCESS_CONTAINER.get(self.tile_type):
+            register_tile_type(self.tile_type, self.__class__)
         # add img
         # graphics[GRAPHICS_IMAGE_KEY].add(self.img)
         return result
@@ -147,12 +148,10 @@ class Tile:
     def deserialize(data):
         """Deserialize a data block"""
         # get the type
-        tile_name = data[TILE_TYPE_KEY]
-        tile_type = TILE_TYPE_ACCESS_CONTAINER[tile_name][0]
-        if tile_name == Tile.tile_type:
-            return tile_type(int(data[TILE_X_KEY]), int(data[TILE_Y_KEY]), data[TILE_IMG_KEY], data[TILE_COL_KEY], TileData.deserialize(data[TILE_STATS_KEY]))
-        else:
-            return tile_type.deserialize(data)
+        tile_type = data[TILE_TYPE_KEY]
+        tile_obj = TILE_TYPE_ACCESS_CONTAINER[tile_type][0]
+        print(tile_obj)
+        return tile_obj.deserialize(data)
 
 # ---------- chunk ------------ #
 
@@ -330,6 +329,8 @@ class World:
         for tile_name, tile_data in TILE_TYPE_ACCESS_CONTAINER.items():
             tt[tile_name] = pickle.dumps(TILE_TYPE_ACCESS_CONTAINER[tile_name], protocol=PICKLE_DUMP_PROTOCOL).hex()
         result[WORLD_TILE_TYPES] = tt
+
+        print(result[WORLD_TILE_TYPES])
 
         return result
     
