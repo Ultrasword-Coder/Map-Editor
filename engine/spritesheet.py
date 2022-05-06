@@ -78,6 +78,8 @@ class SpriteData:
 
 # ------------- SpriteTile ----------------- #
 
+SPRITETILE_TYPE = "sprite_tile"
+
 @dataclass(init=False)
 class SpriteTile(Tile):
     """
@@ -144,11 +146,11 @@ class SpriteTile(Tile):
         # get the sprite sheet
         sheet = SPRITE_SHEETS_CONTAINER[path]
         
-        result = SpriteTile(data[TILE_X_KEY], data[TILE_Y_KEY], data[TILE_COL_KEY], sheet.get_sprite(index))
+        result = SpriteTile(data[TILE_X_KEY]%CHUNK_WIDTH, data[TILE_Y_KEY]%CHUNK_HEIGHT, data[TILE_COL_KEY], sheet.get_sprite(index))
         return result
 
 
-register_tile_type(SpriteTile.tile_type, SpriteTile)
+register_tile_type(SPRITETILE_TYPE, SpriteTile)
 
 # ------------- SpriteSheet ----------------- #
 

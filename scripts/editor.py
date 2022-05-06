@@ -112,13 +112,7 @@ class Editor(WindowObject.WindowObject):
                 self.prev_mouse_world_tile[0] = self.mouse_world_tile_pos[0]
                 self.prev_mouse_world_tile[1] = self.mouse_world_tile_pos[1]
                 if self.world.get_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1]):        
-                    tile = self.world.get_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1]).tile_map[self.mouse_chunk_tile_pos[1]][self.mouse_chunk_tile_pos[0]]
-                    tile.x = 0
-                    tile.y = 0
-                    tile.img = None
-                    tile.collide = 0
-                    tile.tilestats = None
-                    tile.data = {}
+                    self.world.get_chunk(self.mouse_world_chunk_pos[0], self.mouse_world_chunk_pos[1]).tile_map[self.mouse_chunk_tile_pos[1]][self.mouse_chunk_tile_pos[0]] = world.Tile(self.mouse_chunk_tile_pos[0], self.mouse_world_tile_pos[1], None, 0, None, None)
 
         # check if we should save
         if user_input.is_key_pressed(pygame.K_LCTRL) and user_input.is_key_clicked(pygame.K_s):

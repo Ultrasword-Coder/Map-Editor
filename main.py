@@ -25,7 +25,6 @@ HANDLER = Parent.ProjectWorld()
 
 # ----------------------------------------------------------------------- #
 
-
 clock.start(fps=FPS)
 window.create_clock(clock.FPS)
 running = True
