@@ -73,6 +73,11 @@ class Rect:
         """Get's center of the object"""
         return (self.x + self.w // 2, self.y + self.h // 2)
     
+    @center.setter
+    def center(self, new):
+        """Position setter for center"""
+        self.pos = (new[0] - self.w//2, new[1] - self.h//2)
+
     @property
     def left(self):
         """Get's left of object"""
@@ -230,6 +235,7 @@ class Object:
         # standard variables - this is just the object rect 
         self.rect = Rect(0, 0, 0, 0)
         self.ani_registry = None
+        self.sprite = None
 
         # physics properties
         self.p_motion = [0.0, 0.0]

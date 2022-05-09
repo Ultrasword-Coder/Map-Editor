@@ -27,7 +27,9 @@ class Theme:
 
     EDITOR = (255, 255, 255)
 
-    FONT_PATH = "assets/CONSOLA.TTF"
+    FONT_PATH = "assets/important/CONSOLA.TTF"
+    TILE_EDIT_ICON_PATH = "assets/important/tile.png"
+    ENTITY_EDIT_ICON_PATH = "assets/important/entity.png"
 
 
 # menu butons and stuff
