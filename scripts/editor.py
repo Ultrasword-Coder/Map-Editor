@@ -6,6 +6,7 @@ editor.py
 - extends off the world.World object from engine
 
 """
+
 import pygame
 
 from engine import world, user_input, filehandler
