@@ -1,3 +1,6 @@
+import os
+import sys
+import pygame
 # Window Object
 
 WINDOW_OBJECT_TYPE = "windowObject"
@@ -37,3 +40,11 @@ class Menu:
 
     FILL = False
     ERASE = False
+
+
+class UserInput:
+
+    LCONTROL = pygame.K_LCTRL
+    LALT = pygame.K_LALT
+    RCONTROL = pygame.K_RCTRL
+    RALT = pygame.K_RALT

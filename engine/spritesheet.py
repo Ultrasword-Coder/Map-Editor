@@ -118,7 +118,7 @@ class SpriteTile(Tile):
     def render(self, surface, images: dict, offset: tuple = (0, 0)) -> None:
         """Render function for this sprite tile"""
         if self.img:
-            surface.blit(images[self.sprite_hashed_name], (self.x + offset[0], self.y + offset[1]))
+            surface.blit(images[self.sprite_hashed_name], (self.wx + offset[0], self.wy + offset[1]))
     
     def cache_image(self, cache: dict) -> None:
         """Cache the image"""
