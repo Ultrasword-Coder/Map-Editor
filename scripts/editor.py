@@ -22,9 +22,6 @@ TILE_ART = 0
 ENTITY_ART = 1
 
 
-
-
-
 class Editor(WindowObject.WindowObject):
     """
     Editor to edit the world!
@@ -106,7 +103,7 @@ class Editor(WindowObject.WindowObject):
             # print(self.mouse_world_tile_pos, self.mouse_world_chunk_pos, self.mouse_chunk_tile_pos)
 
             # check for art type changes
-            if user_input.is_key_pressed(pygame.K_LCTRL):
+            if user_input.is_key_pressed(UserInput.LCONTROL):
                 if user_input.is_key_clicked(pygame.K_t):
                     self.art_type = TILE_ART
                     print("[Editor.py] tile art time!")
@@ -135,13 +132,14 @@ class Editor(WindowObject.WindowObject):
                 if user_input.is_key_clicked(pygame.K_f):
                     h = handler.PersistentObject()
                     mpos = self.get_rel_pos(user_input.get_mouse_pos())
-                    h.rect.center = (mpos[0] - self.viewport_rect.x, mpos[1] - self.viewport_rect.y)
                     h.rect.area = (254, 254)
+                    h.rect.center = (mpos[0] - self.viewport_rect.x, mpos[1] - self.viewport_rect.y)
                     h.sprite = filehandler.scale(filehandler.get_image("assets/art.png"), h.rect.area)
+                    h.sprite.set_alpha(100)
                     self.world.add_persist_entity(h)
 
         # check if we should save
-        if user_input.is_key_pressed(pygame.K_LCTRL) and user_input.is_key_clicked(pygame.K_s):
+        if user_input.is_key_pressed(UserInput.LCONTROL) and user_input.is_key_clicked(pygame.K_s):
             print("SAVING LEVEL!")
             serialize.save_to_file("test.json", self.world.serialize())
 
