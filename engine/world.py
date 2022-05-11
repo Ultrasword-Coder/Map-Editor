@@ -98,6 +98,8 @@ class Tile:
         self.collide = collide
         self.tilestats = data
         self.data = {}
+        self.wx = 0
+        self.wy = 0
 
     def render(self, surface, images: dict, offset: tuple = (0, 0)) -> None:
         """Render function for this tile"""
@@ -105,13 +107,11 @@ class Tile:
         # i don't know how python function stack works 
         # if has intelligence on this topic, please inform me :D
         if self.img:
-            surface.blit(images[self.img], (self.x + offset[0], self.y + offset[1]))
+            surface.blit(images[self.img], (self.wx + offset[0], self.wy + offset[1]))
     
     def cache_image(self, cache) -> None:
         """Cache the image"""
-        if not self.img:
-            return
-        if not cache.get(self.img):
+        if self.img and not cache.get(self.img):
             cache[self.img] = filehandler.scale(filehandler.get_image(self.img), CHUNK_TILE_AREA)
 
     @property
@@ -127,8 +127,8 @@ class Tile:
     def serialize(self, parent_pos: tuple) -> dict:
         """Serialize this tile"""
         result = {}
-        result[TILE_X_KEY] = (self.x - parent_pos[0]) // CHUNK_TILE_WIDTH
-        result[TILE_Y_KEY] = (self.y - parent_pos[1]) // CHUNK_TILE_HEIGHT
+        result[TILE_X_KEY] = self.x
+        result[TILE_Y_KEY] = self.y
         result[TILE_IMG_KEY] = self.img
         result[TILE_COL_KEY] = self.collide
         if self.tilestats:
@@ -148,7 +148,7 @@ class Tile:
     def deserialize(data):
         """Deserialize a data block"""
         # get the type
-        return Tile(int(data[TILE_X_KEY])%CHUNK_WIDTH, int(data[TILE_Y_KEY])%CHUNK_HEIGHT, data[TILE_IMG_KEY], data[TILE_COL_KEY], TileData.deserialize(data[TILE_STATS_KEY]))
+        return Tile(int(data[TILE_X_KEY])%CHUNK_WIDTH, int(data[TILE_Y_KEY])%CHUNK_HEIGHT, data[TILE_IMG_KEY], int(data[TILE_COL_KEY]), TileData.deserialize(data[TILE_STATS_KEY]))
 
 
 # ------- register the tile type ---------- #
@@ -193,8 +193,8 @@ class Chunk:
         tile.cache_image(self.images)
         # get the object in cache
         self.tile_map[tile.y][tile.x] = tile
-        tile.x = tile.x * CHUNK_TILE_WIDTH + self.world_pos[0]
-        tile.y = tile.y * CHUNK_TILE_HEIGHT + self.world_pos[1]
+        tile.wx = tile.x * CHUNK_TILE_WIDTH + self.world_pos[0]
+        tile.wy = tile.y * CHUNK_TILE_HEIGHT + self.world_pos[1]
 
     def render(self, offset: tuple = (0, 0)) -> None:
         """Renders all the grid tiles and non tile objects"""
@@ -232,6 +232,7 @@ class Chunk:
         for y in range(CHUNK_HEIGHT):
             result[CHUNK_TILEMAP_KEY].append([])
             for x in range(CHUNK_WIDTH):
+                # print(self.tile_map[y][x].serialize(self.world_pos))
                 result[CHUNK_TILEMAP_KEY][y].append(self.tile_map[y][x].serialize(self.world_pos))
         result[CHUNK_POS_KEY] = list(self.pos)
 
@@ -256,6 +257,7 @@ class Chunk:
                 tile = TILE_TYPE_ACCESS_CONTAINER[tile_data[y][x][TILE_TYPE_KEY]][0].deserialize(tile_data[y][x])
                 # print(tile)
                 # set tile
+                print(tile)
                 result.set_tile_at(tile)
         
         return result
