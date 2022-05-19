@@ -21,6 +21,9 @@ from scripts.globals import *
 TILE_ART = 0
 ENTITY_ART = 1
 
+TOGGLE_TILE_VIS = 0
+TOGGLE_ENTITY_VIS = 1
+
 
 class Editor(WindowObject.WindowObject):
     """
@@ -56,7 +59,11 @@ class Editor(WindowObject.WindowObject):
 
         self.tile_icon = filehandler.scale(filehandler.get_image(Theme.TILE_EDIT_ICON_PATH), (50, 50))
         self.entity_icon = filehandler.scale(filehandler.get_image(Theme.ENTITY_EDIT_ICON_PATH), (50, 50))
+        self.blocked_icon = filehandler.scale(filehandler.get_image(Theme.BLOCKED_ICON_PATH), (50, 50))
         self.icon_render_position = (0, 0)
+
+        # toggles
+        self.toggles = [True, True]
 
         art.set_current_editor(self)
         WindowObject.WindowObject.__init__(self, l, t, r, b, parent)
@@ -145,6 +152,17 @@ class Editor(WindowObject.WindowObject):
 
     def render(self):
         """Render the editor + grid"""
+        # check if visibility for anything is toggled
+        if user_input.is_key_pressed(UserInput.LCONTROL) and user_input.is_key_pressed(pygame.K_LSHIFT):
+            if user_input.is_key_clicked(pygame.K_t):
+                # toggle visibility for tiles
+                self.toggles[TOGGLE_TILE_VIS] = not self.toggles[TOGGLE_TILE_VIS]
+                self.dirty = True
+            if user_input.is_key_clicked(pygame.K_e):
+                # toggle visibility for entities
+                self.toggles[TOGGLE_ENTITY_VIS] = not self.toggles[TOGGLE_ENTITY_VIS]
+                self.dirty = True
+
         if self.dirty:
             self.set_all_dirty()
             self.image.fill(self.back_color)
@@ -206,11 +224,13 @@ class Editor(WindowObject.WindowObject):
 
     def render_world(self, rel_center: tuple) -> None:
         """Render the world with the set render distance | include a center"""
-        for cx in range(rel_center[0] - self.world.r_distance, rel_center[0] + self.world.r_distance + 1):
-            for cy in range(rel_center[1] - self.world.r_distance, rel_center[1] + self.world.r_distance + 1):
-                if self.world.get_chunk(cx, cy):
-                    self.render_chunk(self.world.get_chunk(cx, cy))
-        self.render_entities()
+        if self.toggles[TOGGLE_TILE_VIS]:
+            for cx in range(rel_center[0] - self.world.r_distance, rel_center[0] + self.world.r_distance + 1):
+                for cy in range(rel_center[1] - self.world.r_distance, rel_center[1] + self.world.r_distance + 1):
+                    if self.world.get_chunk(cx, cy):
+                        self.render_chunk(self.world.get_chunk(cx, cy))
+        if self.toggles[TOGGLE_ENTITY_VIS]:
+            self.render_entities()
 
     def render_entities(self):
         """Render the entities in the world"""
@@ -244,4 +264,7 @@ class Editor(WindowObject.WindowObject):
             # draw the line
             ly = y * CHUNK_TILE_HEIGHT + self.offset[1] % CHUNK_TILE_HEIGHT
             draw.DEBUG_DRAW_LINE(self.viewport, (0, 0, 0), (0, ly), (self.viewport_rect.w + 20, ly))
+
+
+
 

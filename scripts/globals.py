@@ -33,6 +33,7 @@ class Theme:
     FONT_PATH = "assets/important/CONSOLA.TTF"
     TILE_EDIT_ICON_PATH = "assets/important/tile.png"
     ENTITY_EDIT_ICON_PATH = "assets/important/entity.png"
+    BLOCKED_ICON_PATH = "assets/important/blocked.png"
 
 
 # menu butons and stuff
