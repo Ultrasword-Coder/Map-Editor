@@ -79,6 +79,27 @@ class Editor(WindowObject.WindowObject):
 
     def update(self, dt: float):
         """Update function"""
+        # check if visibility for anything is toggled
+        if user_input.is_key_pressed(UserInput.LCONTROL) and user_input.is_key_pressed(pygame.K_LSHIFT):
+            if user_input.is_key_clicked(pygame.K_t):
+                # toggle visibility for tiles
+                self.toggles[TOGGLE_TILE_VIS] = not self.toggles[TOGGLE_TILE_VIS]
+                self.dirty = True
+            if user_input.is_key_clicked(pygame.K_e):
+                # toggle visibility for entities
+                self.toggles[TOGGLE_ENTITY_VIS] = not self.toggles[TOGGLE_ENTITY_VIS]
+                self.dirty = True
+        # check for art type changes
+        if user_input.is_key_pressed(UserInput.LCONTROL):
+            if user_input.is_key_clicked(pygame.K_t):
+                self.art_type = TILE_ART
+                print("[Editor.py] tile art time!")
+                self.dirty = True
+            elif user_input.is_key_clicked(pygame.K_e):
+                self.art_type = ENTITY_ART
+                print("[Editor.py] entity art time!")
+                self.dirty = True
+        
         # check if hovering
         if self.is_hovering():
             # global input commands for offset
@@ -108,15 +129,6 @@ class Editor(WindowObject.WindowObject):
             self.mouse_chunk_tile_pos[0] = self.mouse_world_tile_pos[0] % CHUNK_WIDTH
             self.mouse_chunk_tile_pos[1] = self.mouse_world_tile_pos[1] % CHUNK_HEIGHT
             # print(self.mouse_world_tile_pos, self.mouse_world_chunk_pos, self.mouse_chunk_tile_pos)
-
-            # check for art type changes
-            if user_input.is_key_pressed(UserInput.LCONTROL):
-                if user_input.is_key_clicked(pygame.K_t):
-                    self.art_type = TILE_ART
-                    print("[Editor.py] tile art time!")
-                elif user_input.is_key_clicked(pygame.K_e):
-                    self.art_type = ENTITY_ART
-                    print("[Editor.py] entity art time!")
 
             # check if currently editing level or entities
             if self.art_type == TILE_ART:
@@ -152,17 +164,6 @@ class Editor(WindowObject.WindowObject):
 
     def render(self):
         """Render the editor + grid"""
-        # check if visibility for anything is toggled
-        if user_input.is_key_pressed(UserInput.LCONTROL) and user_input.is_key_pressed(pygame.K_LSHIFT):
-            if user_input.is_key_clicked(pygame.K_t):
-                # toggle visibility for tiles
-                self.toggles[TOGGLE_TILE_VIS] = not self.toggles[TOGGLE_TILE_VIS]
-                self.dirty = True
-            if user_input.is_key_clicked(pygame.K_e):
-                # toggle visibility for entities
-                self.toggles[TOGGLE_ENTITY_VIS] = not self.toggles[TOGGLE_ENTITY_VIS]
-                self.dirty = True
-
         if self.dirty:
             self.set_all_dirty()
             self.image.fill(self.back_color)
@@ -170,6 +171,9 @@ class Editor(WindowObject.WindowObject):
             # print("Editor.py       | ", self.object_id, self.rect, self.viewport_rect)
             # draw the world
             self.render_world(self.relative_center)
+
+            # render the toggle icons :)
+
 
             if self.art_type == TILE_ART:
                 # draw debug
