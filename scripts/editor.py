@@ -57,13 +57,17 @@ class Editor(WindowObject.WindowObject):
         self.brush = None
         self.art_type = TILE_ART
 
+        self.ENTITY_ICON = filehandler.scale(filehandler.get_image(Theme.EDITOR_ENTITY_ICON), (24, 24))
         self.tile_icon = filehandler.scale(filehandler.get_image(Theme.TILE_EDIT_ICON_PATH), (50, 50))
         self.entity_icon = filehandler.scale(filehandler.get_image(Theme.ENTITY_EDIT_ICON_PATH), (50, 50))
         self.blocked_icon = filehandler.scale(filehandler.get_image(Theme.BLOCKED_ICON_PATH), (50, 50))
+        self.small_blocked_icon = filehandler.scale(self.blocked_icon, (30, 30))
         self.icon_render_position = (0, 0)
 
         # toggles
         self.toggles = [True, True]
+        self.toggle_rects = []
+        self.toggle_images = []
 
         art.set_current_editor(self)
         WindowObject.WindowObject.__init__(self, l, t, r, b, parent)
@@ -77,28 +81,39 @@ class Editor(WindowObject.WindowObject):
                                     int((self.viewport_float_rect.h - self.viewport_float_rect.y) * self.rect.h))
         self.viewport = filehandler.make_surface(int(self.viewport_rect.w), int(self.viewport_rect.h))
 
+        # load some images
+        self.toggle_rects.append(handler.Rect(self.rect.w * 0.91, 0, 30, 30).topleft)
+        self.toggle_rects.append(handler.Rect(self.rect.w * 0.91 + 30, 0, 30, 30).topleft)
+
+        img = filehandler.make_surface(30, 30, flags=filehandler.SRC_ALPHA)
+        img.blit(filehandler.scale(filehandler.get_image(Theme.TILE_EDIT_ICON_PATH), (30, 30)), (0, 0))
+        self.toggle_images.append(img)
+        img = filehandler.make_surface(30, 30, flags=filehandler.SRC_ALPHA)
+        img.blit(filehandler.scale(filehandler.get_image(Theme.ENTITY_EDIT_ICON_PATH), (30, 30)), (0, 0))
+        self.toggle_images.append(img)
+
     def update(self, dt: float):
         """Update function"""
         # check if visibility for anything is toggled
-        if user_input.is_key_pressed(UserInput.LCONTROL) and user_input.is_key_pressed(pygame.K_LSHIFT):
-            if user_input.is_key_clicked(pygame.K_t):
-                # toggle visibility for tiles
-                self.toggles[TOGGLE_TILE_VIS] = not self.toggles[TOGGLE_TILE_VIS]
-                self.dirty = True
-            if user_input.is_key_clicked(pygame.K_e):
-                # toggle visibility for entities
-                self.toggles[TOGGLE_ENTITY_VIS] = not self.toggles[TOGGLE_ENTITY_VIS]
-                self.dirty = True
-        # check for art type changes
         if user_input.is_key_pressed(UserInput.LCONTROL):
-            if user_input.is_key_clicked(pygame.K_t):
-                self.art_type = TILE_ART
-                print("[Editor.py] tile art time!")
-                self.dirty = True
-            elif user_input.is_key_clicked(pygame.K_e):
-                self.art_type = ENTITY_ART
-                print("[Editor.py] entity art time!")
-                self.dirty = True
+            if user_input.is_key_pressed(pygame.K_LSHIFT):
+                if user_input.is_key_clicked(pygame.K_t):
+                    # toggle visibility for tiles
+                    self.toggles[TOGGLE_TILE_VIS] = not self.toggles[TOGGLE_TILE_VIS]
+                    self.dirty = True
+                if user_input.is_key_clicked(pygame.K_e):
+                    # toggle visibility for entities
+                    self.toggles[TOGGLE_ENTITY_VIS] = not self.toggles[TOGGLE_ENTITY_VIS]
+                    self.dirty = True
+            else:
+                if user_input.is_key_clicked(pygame.K_t):
+                    self.art_type = TILE_ART
+                    print("[Editor.py] tile art time!")
+                    self.dirty = True
+                elif user_input.is_key_clicked(pygame.K_e):
+                    self.art_type = ENTITY_ART
+                    print("[Editor.py] entity art time!")
+                    self.dirty = True
         
         # check if hovering
         if self.is_hovering():
@@ -151,10 +166,9 @@ class Editor(WindowObject.WindowObject):
                 if user_input.is_key_clicked(pygame.K_f):
                     h = handler.PersistentObject()
                     mpos = self.get_rel_pos(user_input.get_mouse_pos())
-                    h.rect.area = (254, 254)
+                    h.rect.area = (24, 24)
                     h.rect.center = (mpos[0] - self.viewport_rect.x - self.offset[0], mpos[1] - self.viewport_rect.y - self.offset[1])
-                    h.sprite = filehandler.scale(filehandler.get_image("assets/art.png"), h.rect.area)
-                    h.sprite.set_alpha(100)
+                    h.sprite = self.ENTITY_ICON
                     self.world.add_persist_entity(h)
 
         # check if we should save
@@ -173,7 +187,10 @@ class Editor(WindowObject.WindowObject):
             self.render_world(self.relative_center)
 
             # render the toggle icons :)
-
+            for i, val in enumerate(self.toggles):
+                self.viewport.blit(self.toggle_images[i], self.toggle_rects[i])
+                if not val:
+                    self.viewport.blit(self.small_blocked_icon, self.toggle_rects[i])
 
             if self.art_type == TILE_ART:
                 # draw debug
@@ -195,7 +212,6 @@ class Editor(WindowObject.WindowObject):
 
             # draw the icons onto the grid
             self.viewport.blit(self.tile_icon if self.art_type == TILE_ART else self.entity_icon, self.icon_render_position)
-            
             self.image.blit(self.viewport, self.viewport_rect.topleft)
             window.get_framebuffer().blit(self.image, self.rect.topleft)
             # set dirty
@@ -241,7 +257,7 @@ class Editor(WindowObject.WindowObject):
         for eid, entity in self.world.p_objects.items():
             # render entity
             if entity.sprite:
-                self.viewport.blit(entity.sprite, (entity.rect.x + self.offset[0], entity.rect.y + self.offset[1]))
+                self.viewport.blit(self.ENTITY_ICON, (entity.rect.x + self.offset[0], entity.rect.y + self.offset[1]))
 
     def render_chunk(self, chunk) -> None:
         """Renders all the grid tiles and non tile objects"""
