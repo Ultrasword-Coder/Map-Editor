@@ -48,6 +48,22 @@ class WindowObjectManager(state.State):
 class WindowObject(handler.PersistentObject):
     """
     Similar to HTML layout
+
+    - has parent_object
+    - float_rect
+    - z_index (int)
+    - dirty (bool)
+    - back_color (tuple [int,int,int])
+    - children (list)
+    - offset (list [int, int])
+    - grid_spacing (list [float, float])
+    - parent_grid_pos (int)
+    - item_colums (int)
+    - item_width (float)
+    - sprite (pygame.Surface)
+    - sprite_path (str)
+    - image (pygame.Surface --> for rendering onto other surfaces)
+
     """
     object_type = WINDOW_OBJECT_TYPE
 

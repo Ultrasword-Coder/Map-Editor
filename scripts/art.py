@@ -7,7 +7,7 @@ from engine.globals import *
 
 
 # stores data for the current editor object
-# form editor.py in scripts
+# form Editor.py in scripts
 CURRENT_EDITOR = None
 
 def set_current_editor(editor):
