@@ -28,6 +28,7 @@ class ObjectData:
         obj.rect.pos = self.x, self.y
         obj.rect.area = self.w, self.h
 
+
 @dataclass
 class Rect:
     """
@@ -83,40 +84,84 @@ class Rect:
         """Get's left of object"""
         return self.x
     
+    @left.setter
+    def left(self, other):
+        """Set left"""
+        self.x = other
+
     @property
     def right(self):
         """Get's right of object"""
         return self.x + self.w
     
+    @right.setter
+    def right(self, other):
+        """Set right"""
+        self.x = other - self.w
+
     @property
     def top(self):
         """Get's top of object"""
         return self.y
     
+    @top.setter
+    def top(self, other):
+        """Set top"""
+        self.y = other
+
     @property
     def bottom(self):
         """Get's bottom of object"""
         return self.y + self.h
     
+    @bottom.setter
+    def bottom(self, other):
+        """Set bottom"""
+        self.y = other - self.h
+
     @property
     def topright(self):
         """Get top right"""
         return (self.x + self.w, self.y)
     
+    @topright.setter
+    def topright(self, other):
+        """Set topright"""
+        self.right = other[0]
+        self.top = other[1]
+
     @property
     def topleft(self):
         """Get top left"""
         return (self.x, self.y)
     
+    @topleft.setter
+    def topleft(self, other: tuple):
+        """Set topleft"""
+        self.top = other[0]
+        self.left = other[1]
+
     @property
     def bottomright(self):
         """Get bottom right"""
         return (self.x + self.w, self.y + self.h)
     
+    @bottomright.setter
+    def bottomright(self, other: tuple):
+        """Set bottom right"""
+        self.right = other[0]
+        self.bottom = other[1]
+
     @property
     def bottomleft(self):
         """Get bottom left"""
         return (self.x, self.y + self.h)
+
+    @bottomleft.setter
+    def bottomleft(self, other: tuple):
+        """Set bottom left"""
+        self.left = other[0]
+        self.bottom = other[1]
 
     @property
     def width(self):
