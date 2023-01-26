@@ -210,19 +210,24 @@ class SoraContext:
     @classmethod
     def update_mouse_press(cls, event):
         """Update mouse button press."""
+        if event.button > 3:
+            return
         cls.MOUSE_BUTTONS[event.button - 1] = True
         cls.MOUSE_PRESSED.add(event.button - 1)
 
     @classmethod
     def update_mouse_release(cls, event):
         """Update mouse button release."""
+        if event.button > 3:
+            return
         cls.MOUSE_BUTTONS[event.button - 1] = False
     
     @classmethod
     def update_mouse_scroll(cls, event):
         """Update mouse scroll."""
-        cls.MOUSE_SCROLL[0], cls.MOUSE_SCROLL[1] = event.rel
-        cls.MOUSE_SCROLL_POS[0], cls.MOUSE_SCROLL_POS[1] = event.pos
+        cls.MOUSE_SCROLL[0], cls.MOUSE_SCROLL[1] = event.x, event.y
+        cls.MOUSE_SCROLL_POS[0] += event.x 
+        cls.MOUSE_SCROLL_POS[1] += event.y
     
     # ------------------------------ #
     # hardware data -- input [keyboard]
