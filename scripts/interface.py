@@ -10,6 +10,7 @@ from soragl import physics, scene
 
 class InterfaceObject(physics.Entity):
     def __init__(self, rect:pygame.Rect=None):
+        super().__init__()
         # private
         self._parent = None
         self._children = []
@@ -18,6 +19,7 @@ class InterfaceObject(physics.Entity):
         self.surface = pygame.Surface(self._rect.size, 0, 32)
         # add to the world
         scene.SceneHandler.current_scene().add_entity(self)
+        self.add_component(InterfaceComponent())
     
     def create_child(self, float_rect: pygame.Rect, components: list):
         """Create a child"""
@@ -70,7 +72,7 @@ class InterfaceObject(physics.Entity):
 
 class InterfaceAspect(scene.Aspect):
     def __init__(self):
-        super().__init__()
+        super().__init__(InterfaceComponent)
     
     def update(self, entity):
         """Update the entity"""
@@ -90,5 +92,15 @@ class InterfaceAspect(scene.Aspect):
             parent.set_rect(pygame.Rect(parent.get_position(), parent.surface.get_size()))
 
 
+# ------------------------------ #
+# components
+
+class InterfaceComponent(scene.Component):
+    def __init__(self):
+        super().__init__()
+
+    def update(self):
+        """Update the component"""
+        pass
 
 
